@@ -29,7 +29,7 @@ const getRootPath = ()=> {
   if (process.env.SITE_ROOT) {
     return process.env.SITE_ROOT;
   }
-  return "/";
+  return "";
 }
 const root = getRootPath();
 
