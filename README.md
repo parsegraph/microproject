@@ -1,4 +1,4 @@
-# microproject
+# TODO-PACKAGE-NAME
 
 This is for Node projects:
 
@@ -8,7 +8,7 @@ This is for Node projects:
 
 2. Go to https://github.com/parsegraph/ and create a new repository using that name.
 
-3. Clone latest microproject from https://github.com/parsegraph/microproject
+3. Clone latest microproject from https://github.com/parsegraph/TODO-PACKAGE-NAME
 
 4. Run ./update-package-name.sh with your package name:
 
@@ -20,5 +20,3 @@ This is for Node projects:
 5. Commit (e.g. "Give package a name")
 
 6. Push the repository to Github.
-
-See DEVELOPING.md and DEPLOYING.md
