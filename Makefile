@@ -1,5 +1,6 @@
 DIST_NAME = TODO-PACKAGE-NAME
 DEMO_PORT = 3000
+DEMO_ROOT = /
 
 SCRIPT_FILES = \
 	src/index.ts
@@ -85,7 +86,7 @@ build-container:
 .PHONY: build-container
 
 run-container: build-container stop-container
-	podman run -e SITE_ROOT=/parsegraph/$(DIST_NAME) -w /usr/src/ --name parsegraph-$(DIST_NAME) -it -p$(DEMO_PORT):3000 localhost/parsegraph-$(DIST_NAME):latest npm run demo
+	podman run -e SITE_ROOT=$(DEMO_ROOT) -w /usr/src/ --name parsegraph-$(DIST_NAME) -it -p$(DEMO_PORT):3000 localhost/parsegraph-$(DIST_NAME):latest npm run demo
 .PHONY: run-container
 
 stop-container:
