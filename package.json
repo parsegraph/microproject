@@ -2,7 +2,7 @@
   "name": "parsegraph-TODO-PACKAGE-NAME",
   "version": "1.6.0-dev",
   "description": "TODO-PACKAGE-NAME",
-  "main": "dist/parsegraph-TODO-PACKAGE-NAME.js",
+  "main": "dist/parsegraph-TODO-PACKAGE-NAME.lib.js",
   "types": "dist/TODO-PACKAGE-NAME.d.ts",
   "scripts": {
     "coverage": "nyc npm run test",

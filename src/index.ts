@@ -1,4 +1,4 @@
 // TODO Implement this.
 export default function todo() {
-  return 42;
+  return "Hello from TODO-PACKAGE-NAME";
 }

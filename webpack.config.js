@@ -1,10 +1,13 @@
 const path = require("path");
 
 module.exports = {
-  entry: path.resolve(__dirname, "src/index.ts"),
+  entry: {
+    lib: path.resolve(__dirname, "src/index.ts"),
+    demo: path.resolve(__dirname, "src/demo.ts"),
+  },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "parsegraph-TODO-PACKAGE-NAME.js",
+    filename: "parsegraph-TODO-PACKAGE-NAME.[name].js",
     globalObject: "this",
     library: "parsegraph_TODO-PACKAGE-NAME",
     libraryTarget: "umd",
