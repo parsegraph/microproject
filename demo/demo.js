@@ -3,7 +3,7 @@ const glob = require("glob");
 const express = require("express");
 const app = express();
 
-const name = "TODO-PACKAGE-NAME"
+const name = "TODO-PACKAGE-NAME";
 
 const getPort = (port) => {
   if (process.env.SITE_PORT) {
@@ -27,12 +27,12 @@ const getPort = (port) => {
 };
 const port = getPort(3000);
 
-const getRootPath = ()=> {
+const getRootPath = () => {
   if (process.env.SITE_ROOT) {
     return process.env.SITE_ROOT;
   }
   return "";
-}
+};
 const root = getRootPath();
 
 async function getDemos() {
@@ -88,5 +88,7 @@ app.use(root, express.static("./dist"));
 app.use(root, express.static("./www"));
 
 app.listen(port, () => {
-  console.log(`See ${name} build information at http://localhost:${port}${root}`);
+  console.log(
+    `See ${name} build information at http://localhost:${port}${root}`
+  );
 });
