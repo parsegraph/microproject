@@ -1,4 +1,4 @@
-import todo from "../dist/parsegraph-TODO-PACKAGE-NAME";
+import todo from ".";
 
 document.addEventListener("DOMContentLoaded", () => {
   const root = document.getElementById("demo");
