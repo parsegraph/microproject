@@ -57,17 +57,17 @@ parsegraph-$(DIST_NAME)-prod.tgz: $(PROD_LIB)
 parsegraph-$(DIST_NAME)-dev.tgz: $(DEST_LIB)
 	rm -rf parsegraph-$(DIST_NAME)
 	mkdir parsegraph-$(DIST_NAME)
-	cp -r -t parsegraph-$(DIST_NAME) package.json package-lock.json README.md demo/ LICENSE dist/
+	cp -r -t parsegraph-$(DIST_NAME) package.json yarn.lock README.md demo/ LICENSE dist/
 	tar cvzf $@ parsegraph-$(DIST_NAME)/
 	rm -rf parsegraph-$(DIST_NAME)
 
-$(DEST_LIB): package.json package-lock.json $(SCRIPT_FILES) $(GLSL_SCRIPTS)
+$(DEST_LIB): package.json yarn.lock $(SCRIPT_FILES) $(GLSL_SCRIPTS)
 	npm run build
 	mv -v dist-types/src/* dist/
 	mv dist/index.d.ts dist/parsegraph-$(DIST_NAME).d.ts
 	mv dist/index.d.ts.map dist/parsegraph-$(DIST_NAME).d.ts.map
 
-$(PROD_LIB): package.json package-lock.json $(SCRIPT_FILES)
+$(PROD_LIB): package.json yarn.lock $(SCRIPT_FILES)
 	npm run build-prod
 	mv -v dist-types/src/* dist-prod/
 	mv dist-prod/index.d.ts dist-prod/parsegraph-$(DIST_NAME).d.ts

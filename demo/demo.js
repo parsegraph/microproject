@@ -66,7 +66,7 @@ app.get(root, async (req, res) => {
   write(`</head>`);
   write(`<body>`);
   write(
-    `<h1>${name} <a href='${root}/coverage'>Coverage</a> <a href='${root}/docs'>Docs</a></h1>`
+    `<h1>${name} <a href='${root}/coverage/lcov-report/'>Coverage</a> <a href='${root}/docs'>Docs</a></h1>`
   );
   write(
     `<p>This library is available as JavaScript UMD module: <a href='${root}/parsegraph-${name}.js'>parsegraph-${name}.js</a></p>`

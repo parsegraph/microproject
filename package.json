@@ -5,9 +5,9 @@
   "main": "dist/parsegraph-TODO-PACKAGE-NAME.lib.js",
   "types": "dist/TODO-PACKAGE-NAME.d.ts",
   "scripts": {
-    "coverage": "nyc npm run test",
-    "test": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha",
-    "autotest": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha --watch",
+    "coverage": "jest --coverage --coverageDirectory=dist/coverage/",
+    "test": "jest",
+    "autotest": "jest --watch",
     "demo": "node demo/demo.js",
     "autobuild": "webpack --watch --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
@@ -23,17 +23,6 @@
     "url": "https://github.com/parsegraph/TODO-PACKAGE-NAME/issues"
   },
   "homepage": "https://github.com/parsegraph/TODO-PACKAGE-NAME#readme",
-  "nyc": {
-    "extends": "@istanbuljs/nyc-config-babel",
-    "reporter": [
-      "html"
-    ],
-    "exclude": [
-      "test/**.js",
-      "dist/**.js"
-    ],
-    "reportDir": "dist/coverage"
-  },
   "dependencies": {
     "@babel/cli": "^7.17.0",
     "@babel/core": "^7.17.2",
@@ -42,24 +31,21 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.17.0",
-    "@istanbuljs/nyc-config-babel": "^3.0.0",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^9.1.0",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
+    "babel-jest": "^27.5.1",
     "babel-loader": "^8.2.3",
-    "babel-plugin-istanbul": "^6.1.1",
     "chai": "^4.3.6",
     "eslint": "^8.9.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.3.0",
     "express": "^4.17.2",
     "glslify-loader": "^2.0.0",
+    "jest": "^27.5.1",
     "jsdom": "^19.0.0",
     "jsdom-global": "^3.0.2",
-    "mocha": "^9.2.0",
-    "nyc": "^15.1.0",
-    "openssl": "^2.0.0",
     "prettier": "^2.5.1",
     "raw-loader": "^4.0.2",
     "source-map-loader": "^3.0.1",
