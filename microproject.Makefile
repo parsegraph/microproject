@@ -33,7 +33,7 @@ lint:
 .PHONY: lint
 
 esdoc:
-	npx esdoc
+	npx typedoc $(SCRIPT_FILES) --out ./dist/docs
 .PHONY: esdoc
 
 doc: esdoc

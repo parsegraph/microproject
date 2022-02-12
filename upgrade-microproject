@@ -1,0 +1,82 @@
+#!/bin/bash
+MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
+DEST_DIR=`pwd`
+
+NODE_MODULES=" \
+    @babel/cli \
+    @babel/core \
+    @babel/plugin-proposal-class-properties \
+    @babel/plugin-proposal-private-property-in-object \
+    @babel/preset-env \
+    @babel/preset-typescript \
+    @babel/register \
+    @istanbuljs/nyc-config-babel \
+    @types/chai \
+    @types/mocha \
+    @typescript-eslint/eslint-plugin \
+    @typescript-eslint/parser \
+    babel-loader \
+    babel-plugin-istanbul \
+    chai \
+    eslint \
+    eslint-config-google \
+    eslint-config-prettier \
+    express \
+    glslify-loader \
+    jsdom \
+    jsdom-global \
+    mocha \
+    nyc \
+    openssl \
+    prettier \
+    raw-loader \
+    source-map-loader \
+    source-map-support \
+    ts-loader \
+    ts-mocha \
+    ts-node \
+    ts-shader-loader \
+    typescript \
+    typedoc \
+    webgl-mock \
+    webpack \
+    webpack-cli"
+
+OBSOLETED_MODULES=" \
+    babel-core \
+    babel-register \
+    @types/expect \
+    @babel/polyfill \
+    core-js \
+    parsegraph-testsuite \
+    @atscm/esdoc-typescript-plugin \
+    esdoc \
+    esdoc-standard-plugin"
+
+npm rm $OBSOLETED_MODULES $NODE_MODULES
+npm i $NODE_MODULES
+
+exit
+
+FILES="microproject.Makefile Dockerfile .babelrc .mocharc.yml tsconfig.json tsconfig.testing.json demo/demo.js tmuxify.d"
+for f in $FILES; do
+    if test -d $MICROPROJECT_DIR/$f; then
+        mkdir -p $DEST_DIR/$f
+        cp -v -r -u $MICROPROJECT_DIR/$f/* $DEST_DIR/$f
+        find $DEST_DIR/$f -type f | xargs sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g"
+    elif test -f $MICROPROJECT_DIR/$f; then
+        cp -v -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
+        sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
+    fi
+done
+
+DEFAULT_FILES="package-prod.json webpack.prod.js .github/workflows/prod.js.yml"
+for f in $DEFAULT_FILES; do
+    if ! test -f $DEST_DIR/$f; then
+        mkdir -p `dirname $DEST_DIR/$f`
+        cp -v -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
+        sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
+    fi
+done
+
+test ! -f publish.sh || git rm publish.sh
