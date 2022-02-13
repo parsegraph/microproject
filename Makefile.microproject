@@ -10,7 +10,7 @@ CLEAN_FILES = \
 
 CONFIG_FILES = \
 	Makefile \
-	microproject.Makefile \
+	Makefile.microproject \
 	yarn.lock \
 	package.json \
 	package-prod.json \
