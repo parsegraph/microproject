@@ -13,7 +13,6 @@ CONFIG_FILES = \
 	Makefile.microproject \
 	yarn.lock \
 	package.json \
-	package-prod.json \
 	tsconfig.json \
 	tsconfig.prod.json \
 	.babelrc \
