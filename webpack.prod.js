@@ -1,35 +1,15 @@
-const path = require("path");
+const {DIST_NAME, webpackConfig, relDir} = require("./microproject");
 
 module.exports = {
-  entry: path.resolve(__dirname, "src/index.ts"),
+  entry: relDir("src/index.ts"),
   output: {
-    path: path.resolve(__dirname, "dist-prod"),
-    filename: "parsegraph-TODO-PACKAGE-NAME.js",
+    path: relDir("dist-prod"),
+    filename: `parsegraph-${DIST_NAME}.js`,
     globalObject: "this",
-    library: "parsegraph_TODO-PACKAGE-NAME",
+    library: `parsegraph_${DIST_NAME}`,
     libraryTarget: "umd",
   },
-  module: {
-    rules: [
-      {
-        test: /\.[jt]sx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader", "ts-loader"]
-      },
-      {
-        test: /\.(glsl|vs|fs|vert|frag)$/,
-        exclude: /node_modules/,
-        use: ["ts-shader-loader"],
-      },
-      {
-        test: /\.png/,
-        type: "asset/inline"
-      }
-    ],
-  },
-  resolve: {
-    extensions: [".js", ".ts", ".tsx", ".glsl"],
-    modules: [path.resolve(__dirname, "src"), "node_modules"],
-  },
+  ...webpackConfig(["src/index.ts"]),
   mode: "production",
+  devtool: false
 };
