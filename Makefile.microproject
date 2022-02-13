@@ -93,26 +93,26 @@ clean:
 	rm -rf $(CLEAN_FILES)
 .PHONY: clean
 
-$(DEST_LIB): $(SCRIPT_FILES)
+EXTRA_FILES = \
+	LICENSE \
+	package.json \
+	yarn.lock
+
+$(DEST_LIB): $(EXTRA_FILES) $(SCRIPT_FILES)
 	npx webpack --config webpack.config.js
 	mv -v dist/src/* dist/
 	rm -rf dist/src
 	mv dist/index.d.ts dist/parsegraph-$(DIST_NAME).d.ts
 	mv dist/index.d.ts.map dist/parsegraph-$(DIST_NAME).d.ts.map
 
-$(PROD_LIB): package.json yarn.lock $(SCRIPT_FILES)
-	NODE_ENV=production TS_NODE_PROJECT=tsconfig.prod.json npx webpack --config webpack.prod.js
+$(PROD_LIB): $(EXTRA_FILES) $(SCRIPT_FILES)
+	NODE_ENV=production npx webpack --config webpack.prod.js
 	mv -v dist-prod/src/* dist-prod/
 	rm -rf dist-prod/src
 	mv dist-prod/index.d.ts dist-prod/parsegraph-$(DIST_NAME).d.ts
 	mv dist-prod/index.d.ts.map dist-prod/parsegraph-$(DIST_NAME).d.ts.map
 
 BUILD=parsegraph-$(DIST_NAME)
-
-EXTRA_FILES = \
-	LICENSE \
-	package.json \
-	yarn.lock
 
 parsegraph-$(DIST_NAME)-dev.tgz: $(DEST_LIB)
 	mkdir $(BUILD)
