@@ -7,7 +7,6 @@ PUBLISH="yarn publish parsegraph-method-dev.tgz --no-git-tag-version --prepatch 
 $PUBLISH && exit
 for try in `seq 1 3`; do
     sleep $try
-    git reset HEAD^
     git checkout package.json
     $PUBLISH && exit
 done
