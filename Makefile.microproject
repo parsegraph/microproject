@@ -37,7 +37,7 @@ build-prod: $(PROD_LIB)
 .PHONY: build-prod
 
 demo: $(DEST_LIB)
-	node demo/demo.js
+	cd demo && yarn install && yarn start
 .PHONY: demo
 
 check:
