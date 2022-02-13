@@ -109,7 +109,8 @@ UPGRADED_FILES="$UPGRADED_FILES \
     tmuxify.d \
     demo/demo.js \
     demo/package.json \
-    demo/yarn.lock"
+    demo/yarn.lock \
+    publish.sh"
 
 # Files to upgrade only when missing on dest
 DEFAULT_FILES="$DEFAULT_FILES \
@@ -125,8 +126,7 @@ OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
     package-lock.json \
     package-prod.json \
     tsconfig.testing.json \
-    microproject.js \
-    publish.sh"
+    microproject.js"
 
 for f in $UPGRADED_FILES; do
     if test -d $MICROPROJECT_DIR/$f; then
