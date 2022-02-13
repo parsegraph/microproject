@@ -23,7 +23,7 @@ jobs:
     - run: make install-deps
     - run: make build
     - run: make tar
-    - run: yarn publish parsegraph-TODO-PACKAGE-NAME-prod.tgz --no-git-tag-version --prepatch
+    - run: yarn publish parsegraph-TODO-PACKAGE-NAME-dev.tgz --no-git-tag-version --prepatch
     - uses: actions/upload-artifact@v2
       with:
         name: parsegraph-TODO-PACKAGE-NAME-dev-${{ github.run_number }}
