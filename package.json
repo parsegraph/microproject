@@ -3,7 +3,7 @@
   "version": "1.6.0",
   "description": "TODO-PACKAGE-NAME",
   "main": "dist/parsegraph-TODO-PACKAGE-NAME.lib.js",
-  "types": "dist/parsegraph-TODO-PACKAGE-NAME.d.ts",
+  "types": "dist/src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/parsegraph/TODO-PACKAGE-NAME.git"

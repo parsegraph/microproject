@@ -100,17 +100,9 @@ EXTRA_FILES = \
 
 $(DEST_LIB): $(EXTRA_FILES) $(SCRIPT_FILES)
 	npx webpack --config webpack.config.js
-	mv -v dist/src/* dist/
-	rm -rf dist/src
-	mv dist/index.d.ts dist/parsegraph-$(DIST_NAME).d.ts
-	mv dist/index.d.ts.map dist/parsegraph-$(DIST_NAME).d.ts.map
 
 $(PROD_LIB): $(EXTRA_FILES) $(SCRIPT_FILES)
 	NODE_ENV=production npx webpack --config webpack.prod.js
-	mv -v dist-prod/src/* dist-prod/
-	rm -rf dist-prod/src
-	mv dist-prod/index.d.ts dist-prod/parsegraph-$(DIST_NAME).d.ts
-	mv dist-prod/index.d.ts.map dist-prod/parsegraph-$(DIST_NAME).d.ts.map
 
 BUILD=parsegraph-$(DIST_NAME)
 
