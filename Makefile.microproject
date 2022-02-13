@@ -16,7 +16,7 @@ CONFIG_FILES = \
 	tsconfig.json \
 	tsconfig.prod.json \
 	.babelrc \
-	microproject.js \
+	webpack.common.js \
 	webpack.prod.js \
 	webpack.config.js
 

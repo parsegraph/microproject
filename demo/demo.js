@@ -2,7 +2,7 @@ const glob = require("glob");
 const express = require("express");
 const app = express();
 
-const {DIST_NAME} = require("../microproject");
+const {DIST_NAME} = require("../webpack.common");
 
 const getPort = (port) => {
   if (process.env.SITE_PORT) {

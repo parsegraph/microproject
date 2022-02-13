@@ -1,4 +1,4 @@
-const {DIST_NAME, webpackConfig, relDir} = require("./microproject");
+const {DIST_NAME, webpackConfig, relDir} = require("./webpack.common");
 
 module.exports = {
   entry: {

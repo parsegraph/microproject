@@ -99,7 +99,7 @@ fi
 UPGRADED_FILES="$UPGRADED_FILES \
     Makefile.microproject \
     webpack.prod.js \
-    microproject.js \
+    webpack.common.js \
     Dockerfile \
     .babelrc \
     tsconfig.json \
@@ -122,6 +122,7 @@ OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
     package-lock.json \
     package-prod.json \
     tsconfig.testing.json \
+    microproject.js \
     publish.sh"
 
 for f in $UPGRADED_FILES; do
