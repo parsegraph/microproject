@@ -98,6 +98,8 @@ fi
 # Files to always upgrade
 UPGRADED_FILES="$UPGRADED_FILES \
     Makefile.microproject \
+    .github/workflows/dev.js.yml \
+    .github/workflows/prod.js.yml \
     webpack.prod.js \
     webpack.common.js \
     Dockerfile \
@@ -112,12 +114,12 @@ UPGRADED_FILES="$UPGRADED_FILES \
 # Files to upgrade only when missing on dest
 DEFAULT_FILES="$DEFAULT_FILES \
     webpack.config.js \
-    .github/workflows/prod.js.yml \
     www/favicon.ico \
     www/demo.html"
 
 # Files to remove entirely
 OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
+    .github/workflows/node.js.yml \
     .mocharc.yml \
     .prettierrc.json \
     package-lock.json \
