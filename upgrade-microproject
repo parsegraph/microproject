@@ -2,7 +2,7 @@
 MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
 DEST_DIR=`pwd`
 
-if ! git diff -q; then
+if ! git diff --quiet; then
     echo "Repository has unstaged changes"
     exit 1
 fi
