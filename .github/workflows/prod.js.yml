@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: NODE_ENV=production npm ci --omit=dev
+    - run: NODE_ENV=production yarn ci --omit=dev
     - run: NODE_ENV=production make clean build-prod
     - run: NODE_ENV=production make tar-prod
     - uses: actions/upload-artifact@v2
