@@ -15,6 +15,7 @@ CONFIG_FILES = \
 	package.json \
 	package-prod.json \
 	tsconfig.json \
+	tsconfig.prod.json \
 	.babelrc \
 	microproject.js \
 	webpack.prod.js \
@@ -96,7 +97,7 @@ $(DEST_LIB): $(SCRIPT_FILES)
 	mv dist/index.d.ts.map dist/parsegraph-$(DIST_NAME).d.ts.map
 
 $(PROD_LIB): package.json yarn.lock $(SCRIPT_FILES)
-	NODE_ENV=production npx webpack --config webpack.prod.js
+	NODE_ENV=production TS_NODE_PROJECT=tsconfig.prod.json npx webpack --config webpack.prod.js
 	mv -v dist-types/src/* dist-prod/
 	mv dist-prod/index.d.ts dist-prod/parsegraph-$(DIST_NAME).d.ts
 	mv dist-prod/index.d.ts.map dist-prod/parsegraph-$(DIST_NAME).d.ts.map
