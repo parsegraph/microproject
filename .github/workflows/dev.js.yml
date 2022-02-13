@@ -27,5 +27,5 @@ jobs:
       with:
         name: parsegraph-TODO-PACKAGE-NAME-dev-${{ github.run_number }}
         path: parsegraph-TODO-PACKAGE-NAME-dev.tgz
-    - run: echo "${{ secrets.NPM_PUBLISH_TOKEN }}" >.npmrc
+    - run: echo "${{ secrets.NPM_PUBLISH_TOKEN }}" >~/.npmrc
     - run: yarn publish parsegraph-TODO-PACKAGE-NAME-dev.tgz --no-git-tag-version --prepatch --preid "${{ github.run_number }}-${{ matrix.node_version }}"
