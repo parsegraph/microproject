@@ -39,8 +39,7 @@ const webpackConfig = (prod)=>{
 
   return {
     output: {
-      path: relDir(prod ? "dist-prod" : "dist"),
-      filename: `parsegraph-${DIST_NAME}.[name].js`,
+      path: relDir(prod ? "dist-prod" : "dist", "src"),
       globalObject: "this",
       library: `parsegraph_${DIST_NAME}`,
       libraryTarget: "umd",
