@@ -20,9 +20,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: NODE_ENV=production yarn install --prod --frozen-lockfile
-    - run: NODE_ENV=production make clean build-prod
-    - run: NODE_ENV=production make tar-prod
+    - run: make install-deps-prod
+    - run: make clean build-prod
+    - run: make tar-prod
     - uses: actions/upload-artifact@v2
       with:
         name: parsegraph-TODO-PACKAGE-NAME-prod-${{ github.run_number }}

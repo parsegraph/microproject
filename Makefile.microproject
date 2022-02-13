@@ -30,6 +30,14 @@ autobuild:
 	npx webpack --watch --config webpack.config.js
 .PHONY: autobuild
 
+install-deps-prod:
+	NODE_ENV=production yarn install --prod --immutable --immutable-cache --check-cache
+.PHONY: install-deps-prod
+
+install-deps:
+	yarn install --immutable --immutable-cache --check-cache
+.PHONY: install-deps
+
 build-prod: $(PROD_LIB)
 .PHONY: build-prod
 
@@ -102,18 +110,25 @@ $(PROD_LIB): package.json yarn.lock $(SCRIPT_FILES)
 	mv dist-prod/index.d.ts dist-prod/parsegraph-$(DIST_NAME).d.ts
 	mv dist-prod/index.d.ts.map dist-prod/parsegraph-$(DIST_NAME).d.ts.map
 
+BUILD=parsegraph-$(DIST_NAME)
+
+EXTRA_FILES = \
+	LICENSE \
+	package.json \
+	yarn.lock
+
 parsegraph-$(DIST_NAME)-dev.tgz: $(DEST_LIB)
-	rm -rf parsegraph-$(DIST_NAME)
-	mkdir parsegraph-$(DIST_NAME)
-	cp -r -t parsegraph-$(DIST_NAME) package.json yarn.lock README.md demo/ LICENSE dist/
-	tar cvzf $@ parsegraph-$(DIST_NAME)/
-	rm -rf parsegraph-$(DIST_NAME)
+	mkdir $(BUILD)
+	cp -r -t $(BUILD) $(EXTRA_FILES) dist/
+	rm -rf $(BUILD)/coverage
+	rm -rf $(BUILD)/docs
+	sed -E -i 's/("version"\s*:\s*")([0-9.]+)("\s*,\s*)$$/\1\2-dev\3/g' $(BUILD)/package.json
+	tar cvzf $@ $(BUILD)/
+	rm -rf $(BUILD)
 
 parsegraph-$(DIST_NAME)-prod.tgz: $(PROD_LIB)
-	rm -rf parsegraph-$(DIST_NAME)
-	mkdir parsegraph-$(DIST_NAME)
-	cp -r README.md LICENSE parsegraph-$(DIST_NAME)
-	cp -r dist-prod/ parsegraph-$(DIST_NAME)/dist
-	cp -r package-prod.json parsegraph-$(DIST_NAME)/package.json
-	tar cvzf $@ parsegraph-$(DIST_NAME)/
-	rm -rf parsegraph-$(DIST_NAME)
+	mkdir $(BUILD)
+	cp -r -t $(BUILD) $(EXTRA_FILES)
+	cp -r dist-prod/ $(BUILD)/dist
+	tar cvzf $@ $(BUILD)/
+	rm -rf $(BUILD)
