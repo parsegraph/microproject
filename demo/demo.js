@@ -1,9 +1,8 @@
 const glob = require("glob");
-
 const express = require("express");
 const app = express();
 
-const name = "TODO-PACKAGE-NAME";
+const {DIST_NAME} = require("../microproject");
 
 const getPort = (port) => {
   if (process.env.SITE_PORT) {
@@ -62,14 +61,14 @@ app.get(root, async (req, res) => {
   write(`<!DOCTYPE html>`);
   write(`<html>`);
   write(`<head>`);
-  write(`<title>${name}</title>`);
+  write(`<title>${DIST_NAME}</title>`);
   write(`</head>`);
   write(`<body>`);
   write(
-    `<h1>${name} <a href='${root}/coverage/lcov-report/'>Coverage</a> <a href='${root}/docs'>Docs</a></h1>`
+    `<h1>${DIST_NAME} <a href='${root}/coverage/lcov-report/'>Coverage</a> <a href='${root}/docs'>Docs</a></h1>`
   );
   write(
-    `<p>This library is available as JavaScript UMD module: <a href='${root}/parsegraph-${name}.js'>parsegraph-${name}.js</a></p>`
+    `<p>This library is available as JavaScript UMD module: <a href='${root}/parsegraph-${DIST_NAME}.lib.js'>parsegraph-${DIST_NAME}.lib.js</a></p>`
   );
   write(`<h2>Samples &amp; Demos</h2>`);
   write(`<ul>`);
@@ -83,12 +82,12 @@ app.get(root, async (req, res) => {
   res.end(resp);
 });
 
-app.use(root, express.static("./src"));
-app.use(root, express.static("./dist"));
-app.use(root, express.static("./www"));
+app.use(root, express.static("../src"));
+app.use(root, express.static("../dist"));
+app.use(root, express.static("../www"));
 
 app.listen(port, () => {
   console.log(
-    `See ${name} build information at http://localhost:${port}${root}`
+    `See ${DIST_NAME} build information at http://localhost:${port}${root}`
   );
 });
