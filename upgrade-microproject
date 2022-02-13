@@ -86,7 +86,7 @@ for mod in $OBSOLETED_MODULES $CURRENT_MODULES; do
     fi
 done
 yarn remove $INSTALLED_OBSOLETE_PACKAGES
-yarn add $CURRENT_MODULES
+yarn add -D $CURRENT_MODULES
 git add yarn.lock
 git add package.json
 
@@ -109,7 +109,6 @@ UPGRADED_FILES="$UPGRADED_FILES \
 # Files to upgrade only when missing on dest
 DEFAULT_FILES="$DEFAULT_FILES \
     demo/demo.js \
-    package-prod.json \
     webpack.config.js \
     .github/workflows/prod.js.yml"
 
@@ -118,6 +117,7 @@ OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
     .mocharc.yml \
     .prettierrc.json \
     package-lock.json \
+    package-prod.json \
     tsconfig.testing.json \
     publish.sh"
 

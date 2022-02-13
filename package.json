@@ -1,6 +1,6 @@
 {
   "name": "parsegraph-TODO-PACKAGE-NAME",
-  "version": "1.6.0-dev",
+  "version": "1.6.0",
   "description": "TODO-PACKAGE-NAME",
   "main": "dist/parsegraph-TODO-PACKAGE-NAME.lib.js",
   "types": "dist/TODO-PACKAGE-NAME.d.ts",
@@ -14,7 +14,7 @@
     "url": "https://github.com/parsegraph/TODO-PACKAGE-NAME/issues"
   },
   "homepage": "https://github.com/parsegraph/TODO-PACKAGE-NAME#readme",
-  "dependencies": {
+  "devDependencies": {
     "@babel/cli": "^7.17.0",
     "@babel/core": "^7.17.2",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
