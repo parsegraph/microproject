@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "outDir": "./dist-types/",
+    "outDir": "./dist-prod/",
     "noImplicitAny": true,
     "module": "es2015",
     "target": "es5",
     "jsx": "react",
     "allowJs": true,
-    "sourceMap":true,
+    "sourceMap":false,
     "moduleResolution": "node",
     "declaration": true,
     "declarationMap": true

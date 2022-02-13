@@ -95,15 +95,15 @@ clean:
 
 $(DEST_LIB): $(SCRIPT_FILES)
 	npx webpack --config webpack.config.js
-	mv -v dist-types/src/* dist/
-	rm -rf dist-types
+	mv -v dist/src/* dist/
+	rm -rf dist/src
 	mv dist/index.d.ts dist/parsegraph-$(DIST_NAME).d.ts
 	mv dist/index.d.ts.map dist/parsegraph-$(DIST_NAME).d.ts.map
 
 $(PROD_LIB): package.json yarn.lock $(SCRIPT_FILES)
 	NODE_ENV=production TS_NODE_PROJECT=tsconfig.prod.json npx webpack --config webpack.prod.js
-	mv -v dist-types/src/* dist-prod/
-	rm -rf dist-types
+	mv -v dist-prod/src/* dist-prod/
+	rm -rf dist-prod/src
 	mv dist-prod/index.d.ts dist-prod/parsegraph-$(DIST_NAME).d.ts
 	mv dist-prod/index.d.ts.map dist-prod/parsegraph-$(DIST_NAME).d.ts.map
 
