@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   container.style.transition = "color 2s, left 2s, top 2s";
   document.body.style.transition = "background-color 2s";
-  let timer = null;
-  let dotTimer = null;
+  let timer:any = null;
+  let dotTimer:any = null;
   let dotIndex = 0;
   let dotState = ["#f00", "#c00"]
   const refreshDot = ()=>{
