@@ -95,8 +95,7 @@ clean:
 
 EXTRA_FILES = \
 	LICENSE \
-	package.json \
-	yarn.lock
+	package.json
 
 $(DEST_LIB): $(EXTRA_FILES) $(SCRIPT_FILES)
 	npx webpack --config webpack.config.js
