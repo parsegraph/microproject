@@ -25,7 +25,6 @@ CURRENT_MODULES="$CURRENT_MODULES \
     eslint \
     eslint-config-google \
     eslint-config-prettier \
-    express \
     jest \
     jsdom \
     jsdom-global \
@@ -70,6 +69,7 @@ OBSOLETED_MODULES="$OBSOLETED_MODULES \
     ts-mocha \
     mocha \
     openssl \
+    express \
     esdoc \
     esdoc-standard-plugin"
 
