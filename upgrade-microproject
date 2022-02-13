@@ -112,7 +112,8 @@ UPGRADED_FILES="$UPGRADED_FILES \
 # Files to upgrade only when missing on dest
 DEFAULT_FILES="$DEFAULT_FILES \
     webpack.config.js \
-    .github/workflows/prod.js.yml"
+    .github/workflows/prod.js.yml \
+    www/demo.html"
 
 # Files to remove entirely
 OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
