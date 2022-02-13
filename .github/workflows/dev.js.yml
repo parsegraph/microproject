@@ -23,8 +23,9 @@ jobs:
     - run: make install-deps
     - run: make build
     - run: make tar
-    - run: yarn publish parsegraph-TODO-PACKAGE-NAME-dev.tgz --no-git-tag-version --prepatch --preid "${{ github.run_number }}-${{ matrix.node_version }}"
     - uses: actions/upload-artifact@v2
       with:
         name: parsegraph-TODO-PACKAGE-NAME-dev-${{ github.run_number }}
         path: parsegraph-TODO-PACKAGE-NAME-dev.tgz
+    - run: echo "${{ secrets.NPM_PUBLISH_TOKEN }}" >.npmrc
+    - run: yarn publish parsegraph-TODO-PACKAGE-NAME-dev.tgz --no-git-tag-version --prepatch --preid "${{ github.run_number }}-${{ matrix.node_version }}"
