@@ -9,15 +9,55 @@ document.addEventListener("DOMContentLoaded", () => {
   container.style.position = "absolute";
   container.style.left = "0px";
   container.style.top = "0px";
+  container.style.pointerEvents = "none";
   root.appendChild(container);
   container.style.fontSize = "18px";
   container.style.fontFamily = "sans";
-  container.style.transition = "left 1s, top 1s";
-  document.body.style.transition = "background-color 1s";
-  setInterval(() => {
+  const refresh = ()=>{
     const rand = () => Math.floor(Math.random() * 255);
     document.body.style.backgroundColor = `rgb(${rand()}, ${rand()}, ${rand()})`;
+    container.style.color = `rgb(${rand()}, ${rand()}, ${rand()})`;
     container.style.left = `${Math.random() * container.clientWidth}px`;
     container.style.top = `${Math.random() * container.clientHeight}px`;
-  }, 2000);
+  };
+
+  const dot = document.createElement("div");
+  dot.style.position = "absolute";
+  dot.style.right = "8px";
+  dot.style.top = "8px";
+  dot.style.width = "16px";
+  dot.style.height = "16px";
+  dot.style.borderRadius = "8px";
+  dot.style.transition = "background-color 400ms";
+  dot.style.backgroundColor = "#222";
+  root.appendChild(dot);
+
+  container.style.transition = "color 2s, left 2s, top 2s";
+  document.body.style.transition = "background-color 2s";
+  let timer = null;
+  let dotTimer = null;
+  let dotIndex = 0;
+  let dotState = ["#f00", "#c00"]
+  const refreshDot = ()=>{
+    dotIndex = (dotIndex + 1) % dotState.length;
+    dot.style.backgroundColor = dotState[dotIndex];
+  };
+  const interval = 3000;
+  const dotInterval = 500;
+  root.addEventListener("click", ()=>{
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+      clearInterval(dotTimer);
+      dotTimer = null;
+      dot.style.transition = "background-color 3s";
+      dot.style.backgroundColor = "#222";
+    } else {
+      refresh();
+      dot.style.transition = "background-color 400ms";
+      refreshDot();
+      timer = setInterval(refresh, interval);
+      dotTimer = setInterval(refreshDot, dotInterval);
+    }
+  });
 });
