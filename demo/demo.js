@@ -2,7 +2,7 @@ const glob = require("glob");
 const express = require("express");
 const app = express();
 
-const {DIST_NAME} = require("../webpack.common");
+const { DIST_NAME } = require("../webpack.common");
 
 const getPort = (port) => {
   if (process.env.SITE_PORT) {
@@ -36,7 +36,7 @@ const root = getRootPath();
 
 async function getDemos() {
   return new Promise((respond, reject) => {
-    glob("www/*.html", {}, function (err, files) {
+    glob("../www/*.html", {}, function (err, files) {
       if (err) {
         reject(err);
       }
