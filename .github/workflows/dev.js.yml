@@ -3,10 +3,6 @@
 
 name: Development CI
 
-on:
-  push:
-    branches: main
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,10 +20,12 @@ jobs:
     - run: make install-deps
     - run: make build
     - run: make tar
-    - run: ./publish.sh "${{ github.run_number }}" "${{ matrix.node-version }}"
+    - run: ./publish.sh
+      if: ${{ matrix.node-version == '16.x' }}
       env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+    - run: git push --tags
     - uses: actions/upload-artifact@v2
       with:
-        name: parsegraph-TODO-PACKAGE-NAME-dev-${{ github.run_number }}
+        name: parsegraph-TODO-PACKAGE-NAME-dev-${{ github.run_number }}-${{ matrix.node-version }}
         path: parsegraph-TODO-PACKAGE-NAME-dev.tgz

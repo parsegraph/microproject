@@ -30,7 +30,6 @@ jobs:
     - run: ./publish-prod.sh
       env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-    - run: git push --tags
     - uses: actions/upload-artifact@v2
       with:
         name: parsegraph-TODO-PACKAGE-NAME-prod-${{ github.run_number }}

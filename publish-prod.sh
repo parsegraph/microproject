@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PUBLISH="yarn publish parsegraph-method-prod.tgz --no-git-tag-version --patch"
+PUBLISH="npm pub parsegraph-method-prod.tgz"
 $PUBLISH && exit
 for try in `seq 1 3`; do
     sleep $try
