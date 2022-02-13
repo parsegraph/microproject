@@ -103,7 +103,7 @@ UPGRADED_FILES="$UPGRADED_FILES \
     Dockerfile \
     .babelrc \
     tsconfig.json \
-    tsconfig.testing.json \
+    tsconfig.prod.json \
     tmuxify.d"
 
 # Files to upgrade only when missing on dest
@@ -118,6 +118,7 @@ OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
     .mocharc.yml \
     .prettierrc.json \
     package-lock.json \
+    tsconfig.testing.json \
     publish.sh"
 
 for f in $UPGRADED_FILES; do
