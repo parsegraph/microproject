@@ -21,6 +21,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: make install-deps
+    - run: make build
     - run: make tar
     - uses: actions/upload-artifact@v2
       with:

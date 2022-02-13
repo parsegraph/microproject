@@ -20,8 +20,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: make install-deps-prod
-    - run: make clean build-prod
+    - run: make install-deps
+    - run: make build-prod
     - run: make tar-prod
     - uses: actions/upload-artifact@v2
       with:

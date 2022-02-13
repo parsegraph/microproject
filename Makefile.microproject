@@ -30,10 +30,6 @@ autobuild:
 	npx webpack --watch --config webpack.config.js
 .PHONY: autobuild
 
-install-deps-prod:
-	NODE_ENV=production yarn install --prod --immutable --immutable-cache --check-cache
-.PHONY: install-deps-prod
-
 install-deps:
 	yarn install --immutable --immutable-cache --check-cache
 .PHONY: install-deps
