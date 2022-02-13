@@ -95,6 +95,7 @@ clean:
 
 EXTRA_FILES = \
 	LICENSE \
+	README.md \
 	package.json
 
 $(DEST_LIB): $(EXTRA_FILES) $(SCRIPT_FILES)
