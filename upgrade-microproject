@@ -127,18 +127,18 @@ OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
 for f in $UPGRADED_FILES; do
     if test -d $MICROPROJECT_DIR/$f; then
         mkdir -p $DEST_DIR/$f
-        cp -i -v -r -u $MICROPROJECT_DIR/$f/* $DEST_DIR/$f
+        cp -i -v -r $MICROPROJECT_DIR/$f/* $DEST_DIR/$f
         find $DEST_DIR/$f -type f | xargs sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g"
         git add $f
     elif test -f $MICROPROJECT_DIR/$f; then
-        cp -i -v -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
+        cp -i -v $MICROPROJECT_DIR/$f $DEST_DIR/$f
         sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
         git add $f
     fi
 done
 
 for f in $DEFAULT_FILES; do
-    if ! test -f $DEST_DIR/$f; then
+    if ! test -e $DEST_DIR/$f; then
         mkdir -p `dirname $DEST_DIR/$f`
         cp -i -v -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
         sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
