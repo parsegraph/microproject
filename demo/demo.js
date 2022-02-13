@@ -68,7 +68,7 @@ app.get(root, async (req, res) => {
     `<h1>${DIST_NAME} <a href='${root}/coverage/lcov-report/'>Coverage</a> <a href='${root}/docs'>Docs</a></h1>`
   );
   write(
-    `<p>This library is available as JavaScript UMD module: <a href='${root}/parsegraph-${DIST_NAME}.lib.js'>parsegraph-${DIST_NAME}.lib.js</a></p>`
+    `<p>This library is available as a <a href="${root}/index.js">JavaScript UMD module</a></p>`
   );
   write(`<h2>Samples &amp; Demos</h2>`);
   write(`<ul>`);
