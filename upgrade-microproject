@@ -110,7 +110,8 @@ UPGRADED_FILES="$UPGRADED_FILES \
     demo/demo.js \
     demo/package.json \
     demo/yarn.lock \
-    publish.sh"
+    publish.sh \
+    publish-prod.sh"
 
 # Files to upgrade only when missing on dest
 DEFAULT_FILES="$DEFAULT_FILES \
