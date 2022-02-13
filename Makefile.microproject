@@ -1,5 +1,5 @@
 DEST_LIB = dist/parsegraph-$(DIST_NAME).lib.js
-PROD_LIB = dist/parsegraph-$(DIST_NAME).js
+PROD_LIB = dist-prod/parsegraph-$(DIST_NAME).lib.js
 
 CLEAN_FILES = \
 	dist \
@@ -96,12 +96,14 @@ clean:
 $(DEST_LIB): $(SCRIPT_FILES)
 	npx webpack --config webpack.config.js
 	mv -v dist-types/src/* dist/
+	rm -rf dist-types
 	mv dist/index.d.ts dist/parsegraph-$(DIST_NAME).d.ts
 	mv dist/index.d.ts.map dist/parsegraph-$(DIST_NAME).d.ts.map
 
 $(PROD_LIB): package.json yarn.lock $(SCRIPT_FILES)
 	NODE_ENV=production TS_NODE_PROJECT=tsconfig.prod.json npx webpack --config webpack.prod.js
 	mv -v dist-types/src/* dist-prod/
+	rm -rf dist-types
 	mv dist-prod/index.d.ts dist-prod/parsegraph-$(DIST_NAME).d.ts
 	mv dist-prod/index.d.ts.map dist-prod/parsegraph-$(DIST_NAME).d.ts.map
 
@@ -115,8 +117,8 @@ EXTRA_FILES = \
 parsegraph-$(DIST_NAME)-dev.tgz: $(DEST_LIB)
 	mkdir $(BUILD)
 	cp -r -t $(BUILD) $(EXTRA_FILES) dist/
-	rm -rf $(BUILD)/coverage
-	rm -rf $(BUILD)/docs
+	rm -rf $(BUILD)/dist/coverage
+	rm -rf $(BUILD)/dist/docs
 	sed -E -i 's/("version"\s*:\s*")([0-9.]+)("\s*,\s*)$$/\1\2-dev\3/g' $(BUILD)/package.json
 	tar cvzf $@ $(BUILD)/
 	rm -rf $(BUILD)
