@@ -2,7 +2,12 @@
 MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
 DEST_DIR=`pwd`
 
-NODE_MODULES=" \
+if ! git diff -q; then
+    echo "Repository has unstaged changes"
+    exit 1
+fi
+
+CURRENT_MODULES="$CURRENT_MODULES \
     @babel/cli \
     @babel/core \
     @babel/plugin-proposal-class-properties \
@@ -11,7 +16,7 @@ NODE_MODULES=" \
     @babel/preset-typescript \
     @babel/register \
     @types/chai \
-    @types/mocha \
+    @types/node \
     @typescript-eslint/eslint-plugin \
     @typescript-eslint/parser \
     babel-jest \
@@ -21,7 +26,6 @@ NODE_MODULES=" \
     eslint-config-google \
     eslint-config-prettier \
     express \
-    glslify-loader \
     jest \
     jsdom \
     jsdom-global \
@@ -30,16 +34,28 @@ NODE_MODULES=" \
     source-map-loader \
     source-map-support \
     ts-loader \
-    ts-mocha \
     ts-node \
-    ts-shader-loader \
     typescript \
     typedoc \
-    webgl-mock \
     webpack \
     webpack-cli"
 
-OBSOLETED_MODULES=" \
+GLSL_SCRIPTS=`find $DEST_DIR/src -type f -name '*.glsl'`
+if test x"$GLSL_SCRIPTS" != x; then
+CURRENT_MODULES="$CURRENT_MODULES \
+    glslify-loader \
+    ts-shader-loader \
+    webgl-mock"
+DEFAULT_FILES="src/glsl.d.ts"
+else
+OBSOLETED_MODULES="$OBSOLETED_MODULES \
+    glslify-loader \
+    ts-shader-loader \
+    webgl-mock"
+OBSOLETE_CONFIG="$OBSOLETE_CONFIG src/glsl.d.ts"
+fi
+
+OBSOLETED_MODULES="$OBSOLETED_MODULES \
     nyc \
     @istanbuljs/nyc-config-babel \
     babel-plugin-istanbul \
@@ -50,42 +66,82 @@ OBSOLETED_MODULES=" \
     core-js \
     parsegraph-testsuite \
     @atscm/esdoc-typescript-plugin \
+    @types/mocha \
+    ts-mocha \
     mocha \
     openssl \
     esdoc \
     esdoc-standard-plugin"
 
-yarn remove $OBSOLETED_MODULES $NODE_MODULES
-yarn add $NODE_MODULES
+if test -f package-lock.json; then
+    git rm package-lock.json
+    yarn install
+fi
 
-exit
+INSTALLED_OBSOLETE_PACKAGES=""
 
-FILES="microproject.Makefile Dockerfile .babelrc .mocharc.yml tsconfig.json tsconfig.testing.json demo/demo.js tmuxify.d"
-for f in $FILES; do
+for mod in $OBSOLETED_MODULES $CURRENT_MODULES; do
+    if grep -q -F -e "\"$mod\"" $DEST_DIR/package.json; then
+        INSTALLED_OBSOLETE_PACKAGES="$INSTALLED_OBSOLETE_PACKAGES $mod"
+    fi
+done
+yarn remove $INSTALLED_OBSOLETE_PACKAGES
+yarn add $CURRENT_MODULES
+git add yarn.lock
+git add package.json
+
+if test $MICROPROJECT_DIR = $DEST_DIR; then
+    echo "Microproject dir is the same; not copying files"
+    exit
+fi
+
+# Files to always upgrade
+UPGRADED_FILES="$UPGRADED_FILES \
+    Makefile.microproject \
+    webpack.prod.js \
+    microproject.js \
+    Dockerfile \
+    .babelrc \
+    tsconfig.json \
+    tsconfig.testing.json \
+    tmuxify.d"
+
+# Files to upgrade only when missing on dest
+DEFAULT_FILES="$DEFAULT_FILES \
+    demo/demo.js \
+    package-prod.json \
+    webpack.config.js \
+    .github/workflows/prod.js.yml"
+
+# Files to remove entirely
+OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
+    .mocharc.yml \
+    .prettierrc.json \
+    package-lock.json \
+    publish.sh"
+
+for f in $UPGRADED_FILES; do
     if test -d $MICROPROJECT_DIR/$f; then
         mkdir -p $DEST_DIR/$f
-        cp -v -r -u $MICROPROJECT_DIR/$f/* $DEST_DIR/$f
+        cp -i -v -r -u $MICROPROJECT_DIR/$f/* $DEST_DIR/$f
         find $DEST_DIR/$f -type f | xargs sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g"
+        git add $f
     elif test -f $MICROPROJECT_DIR/$f; then
-        cp -v -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
+        cp -i -v -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
         sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
+        git add $f
     fi
 done
 
-DEFAULT_FILES="package-prod.json webpack.prod.js .github/workflows/prod.js.yml"
 for f in $DEFAULT_FILES; do
     if ! test -f $DEST_DIR/$f; then
         mkdir -p `dirname $DEST_DIR/$f`
-        cp -v -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
+        cp -i -v -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
         sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
+        git add $f
     fi
 done
 
-OBSOLETE_CONFIG=" \
-    .prettierrc.json \
-    package-lock.json \
-    publish.sh
-"
 for f in $OBSOLETE_CONFIG; do
     test ! -f $f || git rm $f
 done
