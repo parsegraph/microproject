@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const rand = () => Math.floor(Math.random() * 255);
     document.body.style.backgroundColor = `rgb(${rand()}, ${rand()}, ${rand()})`;
     container.style.color = `rgb(${rand()}, ${rand()}, ${rand()})`;
-    container.style.left = `${Math.random() * container.clientWidth}px`;
-    container.style.top = `${Math.random() * container.clientHeight}px`;
+    container.style.left = `${Math.random() * root.clientWidth}px`;
+    container.style.top = `${Math.random() * root.clientHeight}px`;
   };
 
   const dot = document.createElement("div");
