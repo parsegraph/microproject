@@ -1,4 +1,4 @@
-const {DIST_NAME, webpackConfig, relDir} = require("./webpack.common");
+const {webpackConfig, relDir} = require("./webpack.common");
 
 module.exports = {
   entry: {
