@@ -116,6 +116,7 @@ UPGRADED_FILES="$UPGRADED_FILES \
 
 # Files to upgrade only when missing on dest
 DEFAULT_FILES="$DEFAULT_FILES \
+    src/demo.ts \
     webpack.config.js \
     www/favicon.ico \
     www/demo.html"
