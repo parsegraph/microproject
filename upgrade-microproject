@@ -111,6 +111,7 @@ UPGRADED_FILES="$UPGRADED_FILES \
     demo/package.json \
     demo/yarn.lock \
     publish.sh \
+    LICENSE \
     publish-prod.sh"
 
 # Files to upgrade only when missing on dest
