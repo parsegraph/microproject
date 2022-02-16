@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import todo from "../dist/parsegraph-TODO-PACKAGE-NAME.lib";
+import todo from "../src/index";
 
 describe("Package", function () {
   it("works", () => {
