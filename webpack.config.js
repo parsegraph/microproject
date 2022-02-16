@@ -1,4 +1,4 @@
-const {DIST_NAME, webpackConfig, relDir} = require("./webpack.common");
+const {webpackConfig, relDir} = require("./webpack.common");
 
 module.exports = {
   entry: {
@@ -6,6 +6,4 @@ module.exports = {
     demo: relDir("src/demo.ts")
   },
   ...webpackConfig(false),
-  mode: "development",
-  devtool: "eval-source-map",
 };
