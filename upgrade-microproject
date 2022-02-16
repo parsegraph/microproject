@@ -60,6 +60,7 @@ OBSOLETED_MODULES="$OBSOLETED_MODULES \
     babel-plugin-istanbul \
     babel-core \
     babel-register \
+    esdoc-typescript-plugin \
     @types/expect \
     @babel/polyfill \
     core-js \
@@ -104,6 +105,7 @@ UPGRADED_FILES="$UPGRADED_FILES \
     webpack.common.js \
     Dockerfile \
     .babelrc \
+    .eslintrc.yml \
     tsconfig.json \
     tsconfig.prod.json \
     tmuxify.d \
