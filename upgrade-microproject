@@ -123,6 +123,7 @@ DEFAULT_FILES="$DEFAULT_FILES \
 OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
     .github/workflows/node.js.yml \
     .mocharc.yml \
+    .esdoc.json \
     .prettierrc.json \
     package-lock.json \
     package-prod.json \
