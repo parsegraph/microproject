@@ -1,7 +1,7 @@
 const path = require("path");
 const { execSync } = require("child_process");
 
-const DIST_NAME = "unicode";
+const DIST_NAME = "TODO-PACKAGE-NAME";
 
 const relDir = (...pathFrags)=>path.resolve(__dirname, ...pathFrags);
 
