@@ -8,24 +8,26 @@ SRC_DIRS="src test"
 echo "DIST_NAME = $DIST_NAME"
 echo
 
-echo -n "SCRIPT_FILES = \"\$SCRIPT_FILES"
+echo -n "SCRIPT_FILES = "
 for srcdir in $SRC_DIRS; do
-    for file in `find $srcdir -name '*.ts' -o -name '*.js' -o -name '*.jsx' -o -name '*.tsx'`; do
-        echo " \\"
-        echo -n -e "\t$file"
-    done
-done;
-echo -e "\""
+    if test -d $srcdir; then
+        for file in `find $srcdir -name '*.ts' -o -name '*.js' -o -name '*.jsx' -o -name '*.tsx'`; do
+            echo " \\"
+            echo -n -e "\t$file"
+        done
+    fi
+done
 echo
 
-echo -n "EXTRA_SCRIPTS = \"\$EXTRA_SCRIPTS"
+echo -n "EXTRA_SCRIPTS = "
 for srcdir in $SRC_DIRS; do
-    for file in `find $srcdir -name '*.glsl'`; do
-        echo " \\"
-        echo -n -e "\t$file"
-    done
+    if test -d $srcdir; then
+        for file in `find $srcdir -name '*.glsl'`; do
+            echo " \\"
+            echo -n -e "\t$file"
+        done
+    fi
 done
-echo -e "\""
 echo
 
 echo "include ./Makefile.microproject"

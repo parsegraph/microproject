@@ -1,0 +1,66 @@
+#!/bin/bash
+export MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
+source $MICROPROJECT_DIR/init.sh
+
+CURRENT_MODULES="$CURRENT_MODULES `cat $MICROPROJECT_DIR/current-modules.txt`"
+
+if test -d $DEST_DIR/src; then
+    GLSL_SCRIPTS=`find $DEST_DIR/src -type f -name '*.glsl'`
+fi
+
+if test x"$GLSL_SCRIPTS" != x; then
+CURRENT_MODULES="$CURRENT_MODULES \
+    glslify-loader \
+    ts-shader-loader \
+    webgl-mock"
+DEFAULT_FILES="src/glsl.d.ts"
+else
+OBSOLETED_MODULES="$OBSOLETED_MODULES \
+    glslify-loader \
+    ts-shader-loader \
+    webgl-mock"
+OBSOLETE_CONFIG="$OBSOLETE_CONFIG src/glsl.d.ts"
+fi
+
+OBSOLETED_MODULES="$OBSOLETED_MODULES `cat $MICROPROJECT_DIR/obsolete-modules.txt`"
+
+if test -f package-lock.json; then
+    git rm package-lock.json
+    yarn install
+fi
+
+INSTALLED_OBSOLETE_PACKAGES=""
+
+if test -f $DEST_DIR/package.json; then
+    for mod in $OBSOLETED_MODULES; do
+        if grep -q -F -e "\"$mod\"" $DEST_DIR/package.json; then
+            INSTALLED_OBSOLETE_PACKAGES="$INSTALLED_OBSOLETE_PACKAGES $mod"
+        fi
+    done
+    if test -n "$INSTALLED_OBSOLETE_PACKAGES"; then
+        yarn remove $INSTALLED_OBSOLETE_PACKAGES
+    fi
+fi
+yarn upgrade -D $CURRENT_MODULES
+
+if test -d $DEST_DIR/src; then
+    PEER_DEPS=" \
+        checkglerror \
+        log"
+
+    FOUND_PEER_DEPS=""
+    for peerdep in $PEER_DEPS; do
+        if test $peerdep != `basename $DEST_DIR` && grep -q -F -e parsegraph-$peerdep $DEST_DIR/src -r; then
+            FOUND_PEER_DEPS="$FOUND_PEER_DEPS parsegraph-$peerdep"
+        fi
+    done
+    if test -n "$FOUND_PEER_DEPS"; then
+        yarn add -P $FOUND_PEER_DEPS
+    fi
+fi
+
+git add yarn.lock
+git add package.json
+if ! git diff --cached --quiet; then
+    git commit -m"Upgrade packages"
+fi

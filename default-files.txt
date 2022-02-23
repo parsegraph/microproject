@@ -1,4 +1,6 @@
 src/demo.ts
+test/test.ts
+README.md
 tmuxify.sh
 webpack.config.js
 www/favicon.ico

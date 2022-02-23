@@ -1,11 +1,7 @@
 #!/bin/bash
-MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
-DEST_DIR=`pwd`
-DIST_NAME=`basename $DEST_DIR`
+export MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
+source $MICROPROJECT_DIR/init.sh
 
-if ! test -d $DEST_DIR/.git; then
-    git init
-fi
 if ! test -f $DEST_DIR/package.json; then
     cp $MICROPROJECT_DIR/package.json $DEST_DIR
     sed -i "s/TODO-PACKAGE-NAME/$DIST_NAME/g" $DEST_DIR/package.json
@@ -14,113 +10,5 @@ if ! test -f $DEST_DIR/package.json; then
     git commit -m"Add package.json and yarn.lock"
 fi
 
-if ! test -e $DEST_DIR/demo.port; then
-    if test -e $DEST_DIR/Makefile && grep -q -e DEMO_PORT $DEST_DIR/Makefile; then
-        grep -e DEMO_PORT $DEST_DIR/Makefile | grep -o -E -e '[0-9]+' >$DEST_DIR/demo.port
-    else
-        node -e "console.log(Math.floor(12000 + Math.random()*3000))" >$DEST_DIR/demo.port
-    fi
-    git add demo.port
-    git commit -m"Add demo port"
-fi
-
-CURRENT_MODULES="$CURRENT_MODULES `cat $MICROPROJECT_DIR/current-modules.txt`"
-
-if test -d $DEST_DIR/src; then
-    GLSL_SCRIPTS=`find $DEST_DIR/src -type f -name '*.glsl'`
-fi
-
-if test x"$GLSL_SCRIPTS" != x; then
-CURRENT_MODULES="$CURRENT_MODULES \
-    glslify-loader \
-    ts-shader-loader \
-    webgl-mock"
-DEFAULT_FILES="src/glsl.d.ts"
-else
-OBSOLETED_MODULES="$OBSOLETED_MODULES \
-    glslify-loader \
-    ts-shader-loader \
-    webgl-mock"
-OBSOLETE_CONFIG="$OBSOLETE_CONFIG src/glsl.d.ts"
-fi
-
-OBSOLETED_MODULES="$OBSOLETED_MODULES `cat $MICROPROJECT_DIR/obsolete-modules.txt`"
-
-if test -f package-lock.json; then
-    git rm package-lock.json
-    yarn install
-fi
-
-INSTALLED_OBSOLETE_PACKAGES=""
-
-if test -f $DEST_DIR/package.json; then
-    for mod in $OBSOLETED_MODULES $CURRENT_MODULES; do
-        if grep -q -F -e "\"$mod\"" $DEST_DIR/package.json; then
-            INSTALLED_OBSOLETE_PACKAGES="$INSTALLED_OBSOLETE_PACKAGES $mod"
-        fi
-    done
-    yarn remove $INSTALLED_OBSOLETE_PACKAGES
-fi
-yarn add -D $CURRENT_MODULES
-
-if test -d $DEST_DIR/src; then
-    PEER_DEPS=" \
-        checkglerror \
-        log"
-
-    FOUND_PEER_DEPS=""
-    for peerdep in $PEER_DEPS; do
-        if test $peerdep != `basename $DEST_DIR` && grep -q -F -e parsegraph-$peerdep $DEST_DIR/src -r; then
-            FOUND_PEER_DEPS="$FOUND_PEER_DEPS parsegraph-$peerdep"
-        fi
-    done
-    if test -n "$FOUND_PEER_DEPS"; then
-        yarn add -P $FOUND_PEER_DEPS
-    fi
-fi
-
-git add yarn.lock
-git add package.json
-
-if test $MICROPROJECT_DIR = $DEST_DIR; then
-    echo "Microproject dir is the same; not copying files"
-    exit
-fi
-
-# Files to always upgrade
-UPGRADED_FILES="$UPGRADED_FILES `cat $MICROPROJECT_DIR/upgraded-files.txt`"
-
-# Files to upgrade only when missing on dest
-DEFAULT_FILES="$DEFAULT_FILES `cat $MICROPROJECT_DIR/default-files.txt`"
-
-# Files to remove entirely
-OBSOLETE_CONFIG="$OBSOLETE_CONFIG `cat $MICROPROJECT_DIR/obsolete-config.txt`"
-
-for f in $UPGRADED_FILES; do
-    if test -d $MICROPROJECT_DIR/$f; then
-        mkdir -p $DEST_DIR/$f
-        cp -v -r $MICROPROJECT_DIR/$f/* $DEST_DIR/$f
-        find $DEST_DIR/$f -type f | xargs sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g"
-        git add $f
-    elif test -f $MICROPROJECT_DIR/$f; then
-        cp -v $MICROPROJECT_DIR/$f $DEST_DIR/$f
-        sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
-        git add $f
-    fi
-done
-
-for f in $DEFAULT_FILES; do
-    if ! test -e $DEST_DIR/$f; then
-        mkdir -p `dirname $DEST_DIR/$f`
-        cp -i -v -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
-        sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
-        git add $f
-    fi
-done
-
-for f in $OBSOLETE_CONFIG; do
-    test ! -f $f || git rm $f
-done
-
-./write-makefile.sh >$DEST_DIR/Makefile
-git add $DEST_DIR/Makefile
+$RUN_CONFIG && $MICROPROJECT_DIR/upgrade-files
+$RUN_PACKAGES && $MICROPROJECT_DIR/upgrade-packages
