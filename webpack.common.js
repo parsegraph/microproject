@@ -47,11 +47,13 @@ const getPackageJSON = ()=>{
 const buildExternals = ()=>{
   const rv = {};
   const packageJson = getPackageJSON();
-  Object.keys(recognizedExternals).forEach(name=>{
-    if(name in packageJson.peerDependencies) {
-      rv[name] = recognizedExternals[name];
-    }
-  });
+  if (packageJson.peerDependencies) {
+    Object.keys(recognizedExternals).forEach(name=>{
+      if(name in packageJson.peerDependencies) {
+        rv[name] = recognizedExternals[name];
+      }
+    });
+  }
   return rv;
 };
 
