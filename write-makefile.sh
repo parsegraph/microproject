@@ -18,6 +18,7 @@ for srcdir in $SRC_DIRS; do
     fi
 done
 echo
+echo
 
 echo -n "EXTRA_SCRIPTS = "
 for srcdir in $SRC_DIRS; do
@@ -28,6 +29,7 @@ for srcdir in $SRC_DIRS; do
         done
     fi
 done
+echo
 echo
 
 echo "include ./Makefile.microproject"
