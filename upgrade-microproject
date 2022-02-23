@@ -2,38 +2,7 @@
 MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
 DEST_DIR=`pwd`
 
-CURRENT_MODULES="$CURRENT_MODULES \
-    @babel/cli \
-    @babel/core \
-    @babel/plugin-proposal-class-properties \
-    @babel/plugin-proposal-private-property-in-object \
-    @babel/preset-env \
-    @babel/preset-typescript \
-    @babel/register \
-    @types/chai \
-    @types/jest \
-    @types/node \
-    @typescript-eslint/eslint-plugin \
-    @typescript-eslint/parser \
-    babel-jest \
-    babel-loader \
-    chai \
-    eslint \
-    eslint-config-google \
-    eslint-config-prettier \
-    jest \
-    jsdom \
-    jsdom-global \
-    prettier \
-    raw-loader \
-    source-map-loader \
-    source-map-support \
-    ts-loader \
-    ts-node \
-    typescript \
-    typedoc \
-    webpack \
-    webpack-cli"
+CURRENT_MODULES="$CURRENT_MODULES `cat $MICROPROJECT_DIR/current-modules.txt`"
 
 GLSL_SCRIPTS=`find $DEST_DIR/src -type f -name '*.glsl'`
 if test x"$GLSL_SCRIPTS" != x; then
@@ -50,25 +19,7 @@ OBSOLETED_MODULES="$OBSOLETED_MODULES \
 OBSOLETE_CONFIG="$OBSOLETE_CONFIG src/glsl.d.ts"
 fi
 
-OBSOLETED_MODULES="$OBSOLETED_MODULES \
-    nyc \
-    @istanbuljs/nyc-config-babel \
-    babel-plugin-istanbul \
-    babel-core \
-    babel-register \
-    esdoc-typescript-plugin \
-    @types/expect \
-    @babel/polyfill \
-    core-js \
-    parsegraph-testsuite \
-    @atscm/esdoc-typescript-plugin \
-    @types/mocha \
-    ts-mocha \
-    mocha \
-    openssl \
-    express \
-    esdoc \
-    esdoc-standard-plugin"
+OBSOLETED_MODULES="$OBSOLETED_MODULES `cat $MICROPROJECT_DIR/obsolete-modules.txt`"
 
 if test -f package-lock.json; then
     git rm package-lock.json
@@ -108,42 +59,13 @@ if test $MICROPROJECT_DIR = $DEST_DIR; then
 fi
 
 # Files to always upgrade
-UPGRADED_FILES="$UPGRADED_FILES \
-    Makefile.microproject \
-    .github/workflows/dev.js.yml \
-    .github/workflows/prod.js.yml \
-    webpack.prod.js \
-    webpack.common.js \
-    Dockerfile \
-    .babelrc \
-    .eslintrc.yml \
-    tsconfig.json \
-    tsconfig.prod.json \
-    tmuxify.d \
-    demo/demo.js \
-    demo/package.json \
-    demo/yarn.lock \
-    publish.sh \
-    LICENSE \
-    publish-prod.sh"
+UPGRADED_FILES="$UPGRADED_FILES `cat $MICROPROJECT_DIR/upgraded-files.txt`"
 
 # Files to upgrade only when missing on dest
-DEFAULT_FILES="$DEFAULT_FILES \
-    src/demo.ts \
-    webpack.config.js \
-    www/favicon.ico \
-    www/demo.html"
+DEFAULT_FILES="$DEFAULT_FILES `cat $MICROPROJECT_DIR/default-files.txt`"
 
 # Files to remove entirely
-OBSOLETE_CONFIG="$OBSOLETE_CONFIG \
-    .github/workflows/node.js.yml \
-    .mocharc.yml \
-    .esdoc.json \
-    .prettierrc.json \
-    package-lock.json \
-    package-prod.json \
-    tsconfig.testing.json \
-    microproject.js"
+OBSOLETE_CONFIG="$OBSOLETE_CONFIG `cat $MICROPROJECT_DIR/obsolete-config.txt`"
 
 for f in $UPGRADED_FILES; do
     if test -d $MICROPROJECT_DIR/$f; then

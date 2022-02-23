@@ -1,0 +1,8 @@
+.github/workflows/node.js.yml
+.mocharc.yml
+.esdoc.json
+.prettierrc.json
+package-lock.json
+package-prod.json
+tsconfig.testing.json
+microproject.js
