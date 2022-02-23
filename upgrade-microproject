@@ -83,6 +83,21 @@ for mod in $OBSOLETED_MODULES $CURRENT_MODULES; do
 done
 yarn remove $INSTALLED_OBSOLETE_PACKAGES
 yarn add -D $CURRENT_MODULES
+
+PEER_DEPS=" \
+    checkglerror \
+    log"
+
+FOUND_PEER_DEPS=""
+for peerdep in $PEER_DEPS; do
+    if test $peerdep != `basename $DEST_DIR` && grep -q -F -e parsegraph-$peerdep  $DEST_DIR/src -r; then
+        FOUND_PEER_DEPS="$FOUND_PEER_DEPS parsegraph-$peerdep"
+    fi
+done
+if test -n "$FOUND_PEER_DEPS"; then
+    yarn add -P $FOUND_PEER_DEPS
+fi
+
 git add yarn.lock
 git add package.json
 
