@@ -1,6 +1,28 @@
 #!/bin/bash
 MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
 DEST_DIR=`pwd`
+DIST_NAME=`basename $DEST_DIR`
+
+if ! test -d $DEST_DIR/.git; then
+    git init
+fi
+if ! test -f $DEST_DIR/package.json; then
+    cp $MICROPROJECT_DIR/package.json $DEST_DIR
+    sed -i "s/TODO-PACKAGE-NAME/$DIST_NAME/g" $DEST_DIR/package.json
+    yarn install
+    git add package.json yarn.lock
+    git commit -m"Add package.json and yarn.lock"
+fi
+
+if ! test -e $DEST_DIR/demo.port; then
+    if test -e $DEST_DIR/Makefile && grep -q -e DEMO_PORT $DEST_DIR/Makefile; then
+        grep -e DEMO_PORT $DEST_DIR/Makefile | grep -o -E -e '[0-9]+' >$DEST_DIR/demo.port
+    else
+        node -e "console.log(Math.floor(12000 + Math.random()*3000))" >$DEST_DIR/demo.port
+    fi
+    git add demo.port
+    git commit -m"Add demo port"
+fi
 
 CURRENT_MODULES="$CURRENT_MODULES `cat $MICROPROJECT_DIR/current-modules.txt`"
 
@@ -99,3 +121,6 @@ done
 for f in $OBSOLETE_CONFIG; do
     test ! -f $f || git rm $f
 done
+
+./write-makefile.sh >$DEST_DIR/Makefile
+git add $DEST_DIR/Makefile
