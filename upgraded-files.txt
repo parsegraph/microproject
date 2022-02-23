@@ -1,6 +1,7 @@
 Makefile.microproject
 .github/workflows/dev.js.yml
 .github/workflows/prod.js.yml
+install-deps.sh
 webpack.prod.js
 webpack.common.js
 Dockerfile
