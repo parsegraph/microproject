@@ -1,4 +1,5 @@
 src/demo.ts
+tmuxify.sh
 webpack.config.js
 www/favicon.ico
 www/demo.html
