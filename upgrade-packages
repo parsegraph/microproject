@@ -2,28 +2,6 @@
 export MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
 source $MICROPROJECT_DIR/init.sh
 
-CURRENT_MODULES="$CURRENT_MODULES `cat $MICROPROJECT_DIR/current-modules.txt`"
-
-if test -d $DEST_DIR/src; then
-    GLSL_SCRIPTS=`find $DEST_DIR/src -type f -name '*.glsl'`
-fi
-
-if test x"$GLSL_SCRIPTS" != x; then
-CURRENT_MODULES="$CURRENT_MODULES \
-    glslify-loader \
-    ts-shader-loader \
-    webgl-mock"
-DEFAULT_FILES="src/glsl.d.ts"
-else
-OBSOLETED_MODULES="$OBSOLETED_MODULES \
-    glslify-loader \
-    ts-shader-loader \
-    webgl-mock"
-OBSOLETE_CONFIG="$OBSOLETE_CONFIG src/glsl.d.ts"
-fi
-
-OBSOLETED_MODULES="$OBSOLETED_MODULES `cat $MICROPROJECT_DIR/obsolete-modules.txt`"
-
 if test -f package-lock.json; then
     git rm package-lock.json
     yarn install
@@ -33,6 +11,32 @@ if test -f package-lock.json; then
         git commit -m"Remove package-lock.json and convert to yarn"
     fi
 fi
+
+GLSL_MODULES=" \
+    glslify-loader \
+    ts-shader-loader \
+    webgl-mock"
+
+if test -d $DEST_DIR/src; then
+    GLSL_SCRIPTS=`find $DEST_DIR/src -type f -name '*.glsl'`
+fi
+
+if test x"$GLSL_SCRIPTS" != x; then
+    cp -r $MICROPROJECT_DIR/src/glsl.d.ts $DEST_DIR/src
+    yarn add -D $GLSL_MODULES
+    git add yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Add GLSL support"
+    fi
+else
+OBSOLETED_MODULES="$OBSOLETED_MODULES $GLSL_MODULES"
+OBSOLETE_CONFIG="$OBSOLETE_CONFIG src/glsl.d.ts"
+fi
+
+CURRENT_MODULES="$CURRENT_MODULES `cat $MICROPROJECT_DIR/current-modules.txt`"
+
+OBSOLETED_MODULES="$OBSOLETED_MODULES `cat $MICROPROJECT_DIR/obsolete-modules.txt`"
 
 INSTALLED_OBSOLETE_PACKAGES=""
 
@@ -46,22 +50,44 @@ if test -f $DEST_DIR/package.json; then
         yarn remove $INSTALLED_OBSOLETE_PACKAGES
     fi
 fi
+git add yarn.lock
+git add package.json
+if ! git diff --cached --quiet; then
+    git commit -m"Remove obsolete packages"
+fi
+
 yarn upgrade -D $CURRENT_MODULES
+git add yarn.lock
+git add package.json
+if ! git diff --cached --quiet; then
+    git commit -m"Upgrade build packages"
+fi
 
 PEER_DEPS=" \
-    checkglerror \
-    log"
+    react \
+    parsegraph-checkglerror \
+    parsegraph-log"
 
 FOUND_PEER_DEPS=""
 for srcdir in src test; do
     if test -d $DEST_DIR/$srcdir; then
         for peerdep in $PEER_DEPS; do
-            if test $peerdep != `basename $DEST_DIR` && grep -q -F -e parsegraph-$peerdep $DEST_DIR/$srcdir -r; then
-                FOUND_PEER_DEPS="$FOUND_PEER_DEPS parsegraph-$peerdep"
+            if test $peerdep != `basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
+                FOUND_PEER_DEPS="$FOUND_PEER_DEPS $peerdep"
             fi
         done
     fi
 done;
+for srcdir in src test; do
+    for anc in $PEER_DEPS; do
+        for peerdep in `$DEST_DIR/../../packages-bin/list-descendents $anc`; do
+            if test $peerdep != `basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
+                FOUND_PEER_DEPS="$FOUND_PEER_DEPS $anc"
+            fi
+        done
+    done
+done;
+FOUND_PEER_DEPS=`echo $FOUND_PEER_DEPS | sed -e 's/ /\n/g' | sort | uniq`
 if test -n "$FOUND_PEER_DEPS"; then
     yarn add -P $FOUND_PEER_DEPS
     git add yarn.lock
@@ -78,7 +104,9 @@ if test -d $MICROPROJECT_DIR/../packages; then
         if test -d $DEST_DIR/$srcdir; then
             for dep in $DEV_DEPS; do
                 if test $dep != `basename $DEST_DIR` && grep -q -F -e parsegraph-$dep $DEST_DIR/$srcdir -r; then
-                    FOUND_DEV_DEPS="$FOUND_DEV_DEPS parsegraph-$dep"
+                    if ! echo "$FOUND_PEER_DEPS" | grep -q -e "parsegraph-$dep"; then
+                        FOUND_DEV_DEPS="$FOUND_DEV_DEPS parsegraph-$dep"
+                    fi
                 fi
             done
         fi
