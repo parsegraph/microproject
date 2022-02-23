@@ -2,11 +2,6 @@
 MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
 DEST_DIR=`pwd`
 
-if ! git diff --quiet; then
-    echo "Repository has unstaged changes"
-    exit 1
-fi
-
 CURRENT_MODULES="$CURRENT_MODULES \
     @babel/cli \
     @babel/core \
