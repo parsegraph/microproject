@@ -40,6 +40,14 @@ demo: $(DEST_LIB)
 	SITE_PORT=$(DEMO_PORT) cd demo && yarn install && yarn start
 .PHONY: demo
 
+tmux:
+	tmuxify restart $(DEMO_PORT)
+.PHONY: tmux
+
+stop-tmux:
+	tmuxify stop
+.PHONY: stop-tmux
+
 RUN_TEST=npx jest --env=jsdom
 
 check:
