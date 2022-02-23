@@ -7,6 +7,7 @@ fi
 if ! test -f $DEST_DIR/.gitignore; then
     cp $MICROPROJECT_DIR/.gitignore $DEST_DIR
     git add .gitignore
+    sed -i "s/TODO-PACKAGE-NAME/$DIST_NAME/g" .gitignore
     git commit -m"Add gitignore"
 fi
 
