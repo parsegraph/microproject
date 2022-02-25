@@ -42,7 +42,7 @@ INSTALLED_OBSOLETE_PACKAGES=""
 
 if test -f $DEST_DIR/package.json; then
     for mod in $OBSOLETED_MODULES; do
-        if grep -q -F -e "\"$mod\"" $DEST_DIR/package.json; then
+        if test "$mod" != "parsegraph-`basename .`" && grep -q -F -e "\"$mod\"" $DEST_DIR/package.json; then
             INSTALLED_OBSOLETE_PACKAGES="$INSTALLED_OBSOLETE_PACKAGES $mod"
         fi
     done
