@@ -16,3 +16,4 @@ demo/yarn.lock
 publish.sh
 LICENSE
 publish-prod.sh
+wait.sh
