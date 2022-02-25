@@ -57,6 +57,24 @@ if ! git diff --cached --quiet; then
     git commit -m"Upgrade microproject files"
 fi
 
+if test ! -d $DEST_DIR/test || (test ! -f $DEST_DIR/test/test.js && test ! -f $DEST_DIR/test/test.ts); then
+    echo "Making tests"
+    mkdir -p $DEST_DIR/test
+    cp -r $MICROPROJECT_DIR/test/test.ts $DEST_DIR/test
+    git add test
+    git commit -m"Add tests"
+elif test -f $DEST_DIR/test/test.js && test ! -f $DEST_DIR/test/test.ts; then
+    echo "Moving tests"
+    git mv test/test.js test/test.ts
+    git commit -m"Move test.js to test.ts"
+fi
+
+sed -i "s#../dist/parsegraph-$DIST_NAME#../src/index#g" $DEST_DIR/test/*
+git add test
+if ! git diff --cached --quiet; then
+    git commit -m"Upgrade tests to use index"
+fi
+
 $MICROPROJECT_DIR/write-makefile.sh >$DEST_DIR/Makefile
 git add $DEST_DIR/Makefile
 if ! git diff --cached --quiet; then
