@@ -8,7 +8,7 @@ SRC_DIRS="src test"
 echo "DIST_NAME = $DIST_NAME"
 echo
 
-echo -n "SCRIPT_FILES = "
+echo -n "SCRIPT_FILES ="
 for srcdir in $SRC_DIRS; do
     if test -d $srcdir; then
         for file in `find $srcdir -name '*.ts' -o -name '*.js' -o -name '*.jsx' -o -name '*.tsx'`; do
@@ -20,7 +20,7 @@ done
 echo
 echo
 
-echo -n "EXTRA_SCRIPTS = "
+echo -n "EXTRA_SCRIPTS ="
 for srcdir in $SRC_DIRS; do
     if test -d $srcdir; then
         for file in `find $srcdir -name '*.glsl'`; do
