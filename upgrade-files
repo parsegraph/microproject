@@ -40,6 +40,23 @@ for f in $UPGRADED_FILES; do
     fi
 done
 
+if test ! -f $DEST_DIR/src/index.ts; then
+    if test -f $DEST_DIR/src/index.js; then
+        git mv src/index.js src/index.ts
+        git commit -m"Move index.js to index.ts"
+    elif test -f $DEST_DIR/src/$DIST_NAME.ts; then
+        git mv src/$DIST_NAME.ts src/index.ts
+        git commit -m"Move $DIST_NAME.ts to index.ts"
+    elif test -f $DEST_DIR/src/$DIST_NAME.js; then
+        git mv src/$DIST_NAME.js src/index.ts
+        git commit -m"Move $DIST_NAME.js to index.ts"
+    else
+        cp $MICROPROJECT_DIR/src/index.ts $DEST_DIR/src
+        git add src/index.ts
+        git commit -m"Add index.ts"
+    fi
+fi
+
 for f in $DEFAULT_FILES; do
     if ! test -e $DEST_DIR/$f; then
         mkdir -p `dirname $DEST_DIR/$f`
