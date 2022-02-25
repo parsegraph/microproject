@@ -1,10 +1,14 @@
 #!/usr/bin/env node
-const { readFileSync, writeFileSync } = require("fs");
+const { writeFileSync } = require("fs");
 const { spawnSync } = require("child_process");
 const path = require("path");
 
-if (!spawnSync("grep", ["-e", "webpack.common", "webpack.config.js"]).status) {
-  return;
+const relDir = (p)=>path.relative(__dirname, p);
+
+const commit = (msg)=> {
+  if (spawnSync("git", ["diff", "--quiet", "webpack.config.js"]).status) {
+    spawnSync("git", ["commit", "webpack.config.js", "-m", msg]);
+  }
 }
 
 const config = require("./webpack.config");
@@ -28,15 +32,10 @@ writeFileSync("webpack.config.js", `const {webpackConfig, relDir} = require("./w
 module.exports = {
   entry: {
 ${Object.keys(config.entry).map(entry=>{
-  return `    ${entry}: relDir("${path.relative(".", config.entry[entry])}"),`
+  return `    ${entry}: relDir("${relDir(config.entry[entry])}"),`
 }).join("\n")}
   },
   ...webpackConfig(false),
 };
 `);
-
-if (spawnSync("git", ["diff", "--quiet", "webpack.config.js"]).status) {
-  console.log("webpack.config.js has changes");
-  return;
-}
-
+commit("Upgrade webpack.config.js");
