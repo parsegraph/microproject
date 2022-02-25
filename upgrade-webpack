@@ -14,13 +14,22 @@ if (typeof config.entry === "string") {
   };
 }
 
+if (!("index" in config.entry) && path.basename(__dirname) in config.entry) {
+  config.entry.index = relDir("src/index.ts");
+  delete config.entry[path.basename(__dirname)];
+}
+
+if (!("demo" in config.entry)) {
+  config.entry.demo = relDir("src/demo.ts");
+}
+
 writeFileSync("webpack.config.js", `const {webpackConfig, relDir} = require("./webpack.common");
 
 module.exports = {
   entry: {
-    ${Object.keys(config.entry).map(entry=>{
-      return `    ${entry}: relDir("${path.relative(".", config.entry[entry])}"),`
-    }).join("\n")}
+${Object.keys(config.entry).map(entry=>{
+  return `    ${entry}: relDir("${path.relative(".", config.entry[entry])}"),`
+}).join("\n")}
   },
   ...webpackConfig(false),
 };
