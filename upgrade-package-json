@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+const { readFileSync, writeFileSync } = require("fs");
+const { spawnSync } = require("child_process");
+const path = require("path");
+
+const moduleRoot = __dirname;
+const packageJsonPath = path.join(moduleRoot, "package.json");
+
+if (spawnSync("git", ["diff", "--quiet", "package.json"]).status) {
+  console.log("package.json has changes");
+  return;
+}
+
+const updatePackageJson = (cb)=>{
+  const packageJSON = JSON.parse(readFileSync(packageJsonPath));
+  cb(packageJSON);
+  writeFileSync(packageJsonPath, JSON.stringify(packageJSON, null, "  ") + "\n");
+}
+
+const commit = (msg)=> {
+  if (spawnSync("git", ["diff", "--quiet", "package.json"]).status) {
+    spawnSync("git", ["commit", "package.json", "-m", msg]);
+  }
+}
+
+updatePackageJson(info=>{
+  if (info.version.endsWith("-dev")) {
+    info.version = info.version.slice(0, info.version.length - "-dev".length).toString();
+  }
+});
+commit("Remove -dev suffix from version");
+
+updatePackageJson(info=>{
+  info.main = "dist/src/index.js";
+  info.types = "dist/src/index.d.ts";
+});
+commit("Fix main and types to refer to index");
+
+updatePackageJson(info=>{
+  delete info.scripts;
+});
+commit("Remove package.json scripts");
+
+updatePackageJson(info=>{
+    delete info.nyc;
+});
+commit("Remove package.json nyc config");

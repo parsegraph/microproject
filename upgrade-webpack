@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+const { readFileSync, writeFileSync } = require("fs");
+const { spawnSync } = require("child_process");
+const path = require("path");
+
+if (!spawnSync("grep", ["-e", "webpack.common", "webpack.config.js"]).status) {
+  return;
+}
+
+const config = require("./webpack.config");
+if (typeof config.entry === "string") {
+  config.entry = {
+    index:config.entry
+  };
+}
+
+writeFileSync("webpack.config.js", `const {webpackConfig, relDir} = require("./webpack.common");
+
+module.exports = {
+  entry: {
+    ${Object.keys(config.entry).map(entry=>{
+      return `    ${entry}: relDir("${path.relative(".", config.entry[entry])}"),`
+    }).join("\n")}
+  },
+  ...webpackConfig(false),
+};
+`);
+
+if (spawnSync("git", ["diff", "--quiet", "webpack.config.js"]).status) {
+  console.log("webpack.config.js has changes");
+  return;
+}
+

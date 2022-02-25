@@ -57,6 +57,15 @@ if test ! -f $DEST_DIR/src/index.ts; then
     fi
 fi
 
+if ! test -f $DEST_DIR/webpack.config.js && test -f $DEST_DIR/webpack.config.cjs; then
+  git mv webpack.config.cjs webpack.config.js
+  git commit -m"Move webpack.config.cjs to webpack.config.js"
+fi
+if ! test -f $DEST_DIR/webpack.prod.js && test -f $DEST_DIR/webpack.prod.cjs; then
+  git mv webpack.prod.cjs webpack.prod.js
+  git commit -m"Move webpack.prod.cjs to webpack.prod.js"
+fi
+
 for f in $DEFAULT_FILES; do
     if ! test -e $DEST_DIR/$f; then
         mkdir -p `dirname $DEST_DIR/$f`
@@ -97,3 +106,6 @@ git add $DEST_DIR/Makefile
 if ! git diff --cached --quiet; then
     git commit -m"Update Makefile"
 fi
+
+$MICROPROJECT_DIR/upgrade-package-json
+$MICROPROJECT_DIR/upgrade-webpack
