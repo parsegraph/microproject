@@ -56,6 +56,20 @@ if ! git diff --cached --quiet; then
     git commit -m"Remove obsolete packages"
 fi
 
+if test -f $DEST_DIR/package.json; then
+    MISSING_MODULES=""
+    for mod in $CURRENT_MODULES; do
+        if test "$mod" != "parsegraph-`basename $(pwd)`" && ! grep -q -F -e "\"$mod\"" $DEST_DIR/package.json; then
+            MISSING_MODULES="$MISSING_MODULES $mod"
+        fi
+    done
+    if test -n "$MISSING_MODULES"; then
+        yarn add -D $MISSING_MODULES
+        git add yarn.lock
+        git add package.json
+        git commit -m"Add missing packages"
+    fi
+fi
 yarn upgrade -D $CURRENT_MODULES
 git add yarn.lock
 git add package.json
