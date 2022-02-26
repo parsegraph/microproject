@@ -15,6 +15,15 @@ const commit = (msg)=> {
 
 const config = require(path.join(pwd, "webpack.config"));
 if (typeof config.entry === "string") {
+  if (path.basename(config.entry) !== "index.ts") {
+      if (path.basename(config.entry) === "index.js") {
+          config.entry = "src/index.ts";
+      } else if (path.basename(config.entry) === `${path.basename(pwd)}.ts`) {
+          config.entry = "src/index.ts";
+      } else if (path.basename(config.entry) === `${path.basename(pwd)}.js`) {
+          config.entry = "src/index.ts";
+      }
+  }
   config.entry = {
     index:config.entry
   };
