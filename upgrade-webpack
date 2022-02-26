@@ -2,8 +2,10 @@
 const { writeFileSync } = require("fs");
 const { spawnSync } = require("child_process");
 const path = require("path");
+const process = require("process");
 
-const relDir = (p)=>path.relative(__dirname, p);
+const pwd = process.cwd();
+const relDir = (p)=>path.relative(pwd, p);
 
 const commit = (msg)=> {
   if (spawnSync("git", ["diff", "--quiet", "webpack.config.js"]).status) {
@@ -11,20 +13,20 @@ const commit = (msg)=> {
   }
 }
 
-const config = require("./webpack.config");
+const config = require(path.join(pwd, "webpack.config"));
 if (typeof config.entry === "string") {
   config.entry = {
     index:config.entry
   };
 }
 
-if (!("index" in config.entry) && path.basename(__dirname) in config.entry) {
-  config.entry.index = relDir("src/index.ts");
-  delete config.entry[path.basename(__dirname)];
+if (!("index" in config.entry) && path.basename(pwd) in config.entry) {
+  config.entry.index = path.join(pwd, "src/index.ts");
+  delete config.entry[path.basename(pwd)];
 }
 
 if (!("demo" in config.entry)) {
-  config.entry.demo = relDir("src/demo.ts");
+  config.entry.demo = path.join(pwd, "src/demo.ts");
 }
 
 writeFileSync("webpack.config.js", `const {webpackConfig, relDir} = require("./webpack.common");
