@@ -32,3 +32,14 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
         exit 1
     fi
 fi
+
+tmuxify stop
+mkdir -p $DEST_DIR/dist
+if find $DEST_DIR/*zip -maxdepth 0 &>/dev/null; then
+    mv -fv $DEST_DIR/*zip $DEST_DIR/dist
+fi
+if find $DEST_DIR/*gz -maxdepth 0 &>/dev/null; then
+    mv -vf $DEST_DIR/*gz $DEST_DIR/dist
+fi
+make clean
+git pull
