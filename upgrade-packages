@@ -86,7 +86,7 @@ FOUND_PEER_DEPS=""
 for srcdir in src test; do
     if test -d $DEST_DIR/$srcdir; then
         for peerdep in $PEER_DEPS; do
-            if test $peerdep != `basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
+            if test $peerdep != parsegraph-`basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
                 FOUND_PEER_DEPS="$FOUND_PEER_DEPS $peerdep"
             fi
         done
@@ -95,7 +95,7 @@ done;
 for srcdir in src test; do
     for anc in $PEER_DEPS; do
         for peerdep in `$DEST_DIR/../../packages-bin/list-descendents $anc`; do
-            if test $peerdep != `basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
+            if test $peerdep != parsegraph-`basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
                 FOUND_PEER_DEPS="$FOUND_PEER_DEPS $anc"
             fi
         done
