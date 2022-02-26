@@ -12,3 +12,4 @@ fi
 
 $RUN_CONFIG && $MICROPROJECT_DIR/upgrade-files
 $RUN_PACKAGES && $MICROPROJECT_DIR/upgrade-packages
+test -n "$BUMP_VERSION" && test "$BUMP_VERSION" != none && $MICROPROJECT_DIR/bump-version $BUMP_VERSION

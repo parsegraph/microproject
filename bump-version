@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+const { packageJsonHasChanges, updatePackageJson, commitPackageJson } = require("./upgradePackageJson")
+const { argv } = require("process");
+
+if (packageJsonHasChanges()) {
+  console.log("package.json has changes");
+  return;
+}
+
+let newVer;
+updatePackageJson(info=>{
+  let parts = info.version.split(".");
+  let upgradeIndex = 0;
+  switch(argv[2]) {
+  case "major":
+      upgradeIndex = 0;
+      break;
+  case "minor":
+      upgradeIndex = 1;
+      break;
+  case "patch":
+      upgradeIndex = 2;
+      break;
+  }
+
+  const curVer = parseInt(parts[upgradeIndex]);
+  parts[upgradeIndex] = curVer + 1;
+  for(let i = upgradeIndex + 1; i < parts.length; ++i) {
+    parts[i] = 0;
+  }
+
+  info.version = parts.join(".");
+  newVer = info.version;
+});
+commitPackageJson("Bump to " + newVer);
