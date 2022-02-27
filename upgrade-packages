@@ -23,7 +23,12 @@ fi
 
 if test x"$GLSL_SCRIPTS" != x; then
     cp -r $MICROPROJECT_DIR/src/glsl.d.ts $DEST_DIR/src
+    cp -r $MICROPROJECT_DIR/glslTransformer.js $DEST_DIR
+    cp -r $MICROPROJECT_DIR/jest.config.js $DEST_DIR
     yarn add -D $GLSL_MODULES
+    git add src/glsl.d.ts
+    git add glslTransformer.js
+    git add jest.config.js
     git add yarn.lock
     git add package.json
     if ! git diff --cached --quiet; then
@@ -31,7 +36,7 @@ if test x"$GLSL_SCRIPTS" != x; then
     fi
 else
 OBSOLETED_MODULES="$OBSOLETED_MODULES $GLSL_MODULES"
-OBSOLETE_CONFIG="$OBSOLETE_CONFIG src/glsl.d.ts"
+OBSOLETE_CONFIG="$OBSOLETE_CONFIG src/glsl.d.ts glslTransformer.js jest.config.js"
 fi
 
 CURRENT_MODULES="$CURRENT_MODULES `cat $MICROPROJECT_DIR/current-modules.txt`"
