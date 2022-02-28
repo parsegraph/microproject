@@ -110,7 +110,13 @@ for srcdir in src test; do
 done;
 FOUND_PEER_DEPS=`echo $FOUND_PEER_DEPS | sed -e 's/ /\n/g' | sort | uniq`
 if test -n "$FOUND_PEER_DEPS"; then
-    yarn add -P $FOUND_PEER_DEPS
+    for mod in $FOUND_PEER_DEPS; do
+        if $MICROPROJECT_DIR/has-peer-dep $mod; then
+            yarn upgrade -P $mod --latest
+        else
+            yarn add -P $mod
+        fi
+    done
     git add yarn.lock
     git add package.json
     if ! git diff --cached --quiet; then
@@ -152,7 +158,9 @@ if test -d $MICROPROJECT_DIR/../packages; then
     fi
 
     if test -n "$FOUND_PACKAGE_DEPS"; then
-        yarn upgrade $FOUND_PACKAGE_DEPS
+        for mod in $FOUND_PACKAGE_DEPS ; do
+            yarn upgrade $mod --latest
+        done
     fi
     git add yarn.lock
     git add package.json
@@ -161,7 +169,9 @@ if test -d $MICROPROJECT_DIR/../packages; then
     fi
 
     if test -n "$FOUND_PACKAGE_DEV_DEPS"; then
-        yarn upgrade -D $FOUND_PACKAGE_DEV_DEPS
+        for mod in $FOUND_PACKAGE_DEV_DEPS ; do
+            yarn upgrade -D $mod --latest
+        done
     fi
     git add yarn.lock
     git add package.json
