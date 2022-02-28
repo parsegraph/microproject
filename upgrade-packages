@@ -149,6 +149,7 @@ if test -d $MICROPROJECT_DIR/../packages; then
     done;
 
     if test -n "$MISSING_PACKAGE_DEPS"; then
+        echo Adding missing $MISSING_PACKAGE_DEPS
         yarn add $MISSING_PACKAGE_DEPS
     fi
     git add yarn.lock
@@ -158,6 +159,7 @@ if test -d $MICROPROJECT_DIR/../packages; then
     fi
 
     if test -n "$FOUND_PACKAGE_DEPS"; then
+        echo Upgrading $FOUND_PACKAGE_DEPS
         for mod in $FOUND_PACKAGE_DEPS ; do
             yarn upgrade $mod --latest
         done
@@ -169,6 +171,7 @@ if test -d $MICROPROJECT_DIR/../packages; then
     fi
 
     if test -n "$FOUND_PACKAGE_DEV_DEPS"; then
+        echo Upgrading $FOUND_PACKAGE_DEV_DEPS
         for mod in $FOUND_PACKAGE_DEV_DEPS ; do
             yarn upgrade -D $mod --latest
         done
