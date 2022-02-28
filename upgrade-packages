@@ -117,25 +117,25 @@ if test -n "$FOUND_PEER_DEPS"; then
 fi
 
 if test -d $MICROPROJECT_DIR/../packages; then
-    DEV_DEPS=`ls -1 $MICROPROJECT_DIR/../packages`
-    FOUND_DEV_DEPS=""
+    PACKAGE_DEPS=`ls -1 $MICROPROJECT_DIR/../packages`
+    FOUND_PACKAGE_DEPS=""
     for srcdir in src test; do
         if test -d $DEST_DIR/$srcdir; then
-            for dep in $DEV_DEPS; do
+            for dep in $PACKAGE_DEPS; do
                 if test $dep != `basename $DEST_DIR` && grep -q -F -e parsegraph-$dep $DEST_DIR/$srcdir -r; then
                     if ! echo "$FOUND_PEER_DEPS" | grep -q -e "parsegraph-$dep"; then
-                        FOUND_DEV_DEPS="$FOUND_DEV_DEPS parsegraph-$dep"
+                        FOUND_PACKAGE_DEPS="$FOUND_PACKAGE_DEPS parsegraph-$dep"
                     fi
                 fi
             done
         fi
     done;
-    if test -n "$FOUND_DEV_DEPS"; then
-        yarn add -D $FOUND_DEV_DEPS
+    if test -n "$FOUND_PACKAGE_DEPS"; then
+        yarn add $FOUND_PACKAGE_DEPS
         git add yarn.lock
         git add package.json
         if ! git diff --cached --quiet; then
-            git commit -m"Upgrade dev dependencies"
+            git commit -m"Upgrade parsegraph dependencies"
         fi
     fi
 fi
