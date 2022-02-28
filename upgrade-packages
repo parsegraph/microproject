@@ -75,7 +75,9 @@ if test -f $DEST_DIR/package.json; then
         git commit -m"Add missing packages"
     fi
 fi
-yarn upgrade -D $CURRENT_MODULES
+if test -n "$CURRENT_MODULES"; then
+    yarn upgrade -D $CURRENT_MODULES
+fi
 git add yarn.lock
 git add package.json
 if ! git diff --cached --quiet; then
