@@ -118,24 +118,52 @@ fi
 
 if test -d $MICROPROJECT_DIR/../packages; then
     PACKAGE_DEPS=`ls -1 $MICROPROJECT_DIR/../packages`
+    FOUND_PACKAGE_DEV_DEPS=""
     FOUND_PACKAGE_DEPS=""
+    MISSING_PACKAGE_DEPS=""
+
     for srcdir in src test; do
         if test -d $DEST_DIR/$srcdir; then
             for dep in $PACKAGE_DEPS; do
                 if test $dep != `basename $DEST_DIR` && grep -q -F -e parsegraph-$dep $DEST_DIR/$srcdir -r; then
                     if ! echo "$FOUND_PEER_DEPS" | grep -q -e "parsegraph-$dep"; then
-                        FOUND_PACKAGE_DEPS="$FOUND_PACKAGE_DEPS parsegraph-$dep"
+                        if $MICROPROJECT_DIR/has-dev-dep $dep; then
+                            FOUND_PACKAGE_DEV_DEPS="$FOUND_PACKAGE_DEV_DEPS parsegraph-$dep"
+                        elif $MICROPROJECT_DIR/has-dep $dep; then
+                            FOUND_PACKAGE_DEPS="$FOUND_PACKAGE_DEPS parsegraph-$dep"
+                        else
+                            MISSING_PACKAGE_DEPS="$MISSING_PACKAGE_DEPS parsegraph-$dep"
+                        fi
                     fi
                 fi
             done
         fi
     done;
+
+    if test -n "$MISSING_PACKAGE_DEPS"; then
+        yarn add $MISSING_PACKAGE_DEPS
+    fi
+    git add yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Add missing parsegraph dependencies"
+    fi
+
     if test -n "$FOUND_PACKAGE_DEPS"; then
-        yarn add $FOUND_PACKAGE_DEPS
-        git add yarn.lock
-        git add package.json
-        if ! git diff --cached --quiet; then
-            git commit -m"Upgrade parsegraph dependencies"
-        fi
+        yarn upgrade $FOUND_PACKAGE_DEPS
+    fi
+    git add yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Upgrade parsegraph dependencies"
+    fi
+
+    if test -n "$FOUND_PACKAGE_DEV_DEPS"; then
+        yarn upgrade -D $FOUND_PACKAGE_DEV_DEPS
+    fi
+    git add yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Upgrade parsegraph dev dependencies"
     fi
 fi

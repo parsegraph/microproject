@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+
+const { argv } = require("process");
+const { readFileSync } = require("fs");
+
+const package = argv[2];
+
+const packageJson = JSON.parse(readFileSync("./package.json"));
+
+process.exit(
+    packageJson.devDependencies[package] || packageJson.devDependencies["parsegraph-" + package] ?
+        0 : 1
+)
