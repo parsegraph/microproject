@@ -86,6 +86,7 @@ fi
 
 PEER_DEPS=" \
     react \
+    webgl-debug \
     parsegraph-checkglerror \
     parsegraph-log"
 
