@@ -76,7 +76,8 @@ if test -f $DEST_DIR/package.json; then
     fi
 fi
 if test -n "$CURRENT_MODULES"; then
-    yarn upgrade -D $CURRENT_MODULES
+    yarn remove $CURRENT_MODULES
+    yarn add -D $CURRENT_MODULES
 fi
 git add yarn.lock
 git add package.json
@@ -114,7 +115,8 @@ FOUND_PEER_DEPS=`echo $FOUND_PEER_DEPS | sed -e 's/ /\n/g' | sort | uniq`
 if test -n "$FOUND_PEER_DEPS"; then
     for mod in $FOUND_PEER_DEPS; do
         if $MICROPROJECT_DIR/has-peer-dep $mod; then
-            yarn upgrade -P $mod --latest
+            yarn remove $mod
+            yarn add -P $mod
         else
             yarn add -P $mod
         fi
@@ -163,7 +165,8 @@ if test -d $MICROPROJECT_DIR/../packages; then
     if test -n "$FOUND_PACKAGE_DEPS"; then
         echo Upgrading $FOUND_PACKAGE_DEPS
         for mod in $FOUND_PACKAGE_DEPS ; do
-            yarn upgrade $mod --latest
+            yarn remove $mod
+            yarn add $mod
         done
     fi
     git add yarn.lock
@@ -175,7 +178,8 @@ if test -d $MICROPROJECT_DIR/../packages; then
     if test -n "$FOUND_PACKAGE_DEV_DEPS"; then
         echo Upgrading $FOUND_PACKAGE_DEV_DEPS
         for mod in $FOUND_PACKAGE_DEV_DEPS ; do
-            yarn upgrade -D $mod --latest
+            yarn remove $mod
+            yarn add $mod
         done
     fi
     git add yarn.lock
