@@ -118,7 +118,6 @@ if test -n "$FOUND_PEER_DEPS"; then
             yarn add -P $mod
         fi
     done
-    git add yarn.lock
     git checkout yarn.lock
     git add package.json
     if ! git diff --cached --quiet; then
