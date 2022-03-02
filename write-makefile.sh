@@ -23,7 +23,7 @@ echo
 echo -n "EXTRA_SCRIPTS ="
 for srcdir in $SRC_DIRS; do
     if test -d $srcdir; then
-        for file in `find $srcdir -name '*.glsl'`; do
+        for file in `find $srcdir -name '*.glsl *.css'`; do
             echo " \\"
             echo -n -e "\t$file"
         done
