@@ -103,13 +103,15 @@ for srcdir in src test; do
     fi
 done;
 for srcdir in src test; do
-    for anc in $PEER_DEPS; do
-        for peerdep in `$DEST_DIR/../../packages-bin/list-descendents $anc`; do
-            if test $peerdep != parsegraph-`basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
-                FOUND_PEER_DEPS="$FOUND_PEER_DEPS $anc"
-            fi
-        done
-    done
+    if test -d $DEST_DIR/$srcdir; then
+      for anc in $PEER_DEPS; do
+          for peerdep in `$DEST_DIR/../../packages-bin/list-descendents $anc`; do
+              if test $peerdep != parsegraph-`basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
+                  FOUND_PEER_DEPS="$FOUND_PEER_DEPS $anc"
+              fi
+          done
+      done
+    fi
 done;
 FOUND_PEER_DEPS=`echo $FOUND_PEER_DEPS | sed -e 's/ /\n/g' | sort | uniq`
 if test -n "$FOUND_PEER_DEPS"; then
