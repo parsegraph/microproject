@@ -45,5 +45,5 @@ fi
 if find $DEST_DIR/*gz -maxdepth 0 &>/dev/null; then
     mv -vf $DEST_DIR/*gz $DEST_DIR/dist
 fi
-make clean
+test -f $DEST_DIR/Makefile && make clean
 git pull
