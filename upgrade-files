@@ -40,6 +40,10 @@ for f in $UPGRADED_FILES; do
     fi
 done
 
+if test ! -d $DEST_DIR/src; then
+  mkdir -p src
+fi
+
 if test ! -f $DEST_DIR/src/index.ts; then
     if test -f $DEST_DIR/src/index.js; then
         git mv src/index.js src/index.ts
