@@ -1,0 +1,43 @@
+#!/bin/bash
+export MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
+source $MICROPROJECT_DIR/init.sh
+
+if test $MICROPROJECT_DIR = $DEST_DIR; then
+    echo "Microproject dir is the same; not copying files"
+    exit
+fi
+
+if ! test -e $DEST_DIR/demo.port; then
+    if test -e $DEST_DIR/Makefile && grep -q -e DEMO_PORT $DEST_DIR/Makefile; then
+        grep -e DEMO_PORT $DEST_DIR/Makefile | grep -o -E -e '[0-9]+' >$DEST_DIR/demo.port
+    else
+        node -e "console.log(Math.floor(12000 + Math.random()*3000))" >$DEST_DIR/demo.port
+    fi
+    git add demo.port
+    git commit -m"Add demo port"
+fi
+
+# Demo files
+DEMO_FILES="$DEMO_FILES `cat $MICROPROJECT_DIR/demo-files.txt`"
+
+for f in $DEMO_FILES ; do
+    if ! test -e $DEST_DIR/$f; then
+        mkdir -p `dirname $DEST_DIR/$f`
+        cp -i -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
+        sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
+        git add $f
+    fi
+done
+
+if ! git diff --cached --quiet; then
+    git commit -m"Upgrade demo files"
+fi
+
+$MICROPROJECT_DIR/write-makefile.sh >$DEST_DIR/Makefile
+git add $DEST_DIR/Makefile
+if ! git diff --cached --quiet; then
+    git commit -m"Update Makefile"
+fi
+
+$MICROPROJECT_DIR/upgrade-package-json
+$MICROPROJECT_DIR/upgrade-webpack
