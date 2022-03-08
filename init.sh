@@ -20,8 +20,8 @@ export BUMP_VERSION=none
 for arg in $*; do
     case "$arg" in
         --force|-f|-force) FORCE=true ;;
-        up|yarn|upgrade|package|pkg) RUN_PACKAGES=true ;;
-        files|make|cfg|conf|config) RUN_CONFIG=true ;;
+        package|pkg) RUN_PACKAGES=true ;;
+        files) RUN_CONFIG=true ;;
         demo) RUN_DEMO=true ;;
         bump-patch|patch*) BUMP_VERSION=patch ;;
         bump-minor|minor*) BUMP_VERSION=minor ;;
