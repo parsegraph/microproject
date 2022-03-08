@@ -6,7 +6,8 @@ fi
 while true; do
     make demo SITE_PORT=$SITE_PORT &
     serverpid=$!
-    trap 'kill -TERM $serverpid' TERM INT
+    trap 'kill -TERM $serverpid' TERM
+    trap 'kill -TERM $serverpid; exit' INT
     sleep 0.2
     inotifywait -e modify -r demo
     kill -TERM $serverpid
