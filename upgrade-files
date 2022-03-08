@@ -20,6 +20,9 @@ fi
 # Files to always upgrade
 UPGRADED_FILES="$UPGRADED_FILES `cat $MICROPROJECT_DIR/upgraded-files.txt`"
 
+# Demo files
+DEMO_FILES="$DEMO_FILES `cat $MICROPROJECT_DIR/demo-files.txt`"
+
 # Files to upgrade only when missing on dest
 DEFAULT_FILES="$DEFAULT_FILES `cat $MICROPROJECT_DIR/default-files.txt`"
 
@@ -85,6 +88,19 @@ done
 
 if ! git diff --cached --quiet; then
     git commit -m"Upgrade microproject files"
+fi
+
+for f in $DEMO_FILES ; do
+    if ! test -e $DEST_DIR/$f; then
+        mkdir -p `dirname $DEST_DIR/$f`
+        cp -i -r -u $MICROPROJECT_DIR/$f $DEST_DIR/$f
+        sed -i "s/TODO-PACKAGE-NAME/`basename $DEST_DIR`/g" $f
+        git add $f
+    fi
+done
+
+if ! git diff --cached --quiet; then
+    git commit -m"Upgrade demo files"
 fi
 
 if test ! -d $DEST_DIR/test || (test ! -f $DEST_DIR/test/test.js && test ! -f $DEST_DIR/test/test.ts); then

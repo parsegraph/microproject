@@ -10,9 +10,6 @@ Dockerfile
 tsconfig.json
 tsconfig.prod.json
 tmuxify.d
-demo/demo.js
-demo/package.json
-demo/yarn.lock
 publish.sh
 LICENSE
 publish-prod.sh
