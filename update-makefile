@@ -1,0 +1,14 @@
+#!/bin/bash
+export MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
+source $MICROPROJECT_DIR/init.sh
+
+if test $MICROPROJECT_DIR = $DEST_DIR; then
+    echo "Microproject dir is the same; not copying files"
+    exit
+fi
+
+$MICROPROJECT_DIR/write-makefile.sh >$DEST_DIR/Makefile
+git add $DEST_DIR/Makefile
+if ! git diff --cached --quiet; then
+    git commit -m"Update Makefile"
+fi
