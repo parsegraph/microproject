@@ -8,7 +8,7 @@ const package = argv[2];
 const packageJson = JSON.parse(readFileSync("./package.json"));
 
 process.exit(
-    packageJson.peerDependencies[package] || packageJson.peerDependencies["parsegraph-" + package] ?
+    packageJson.peerDependencies && (packageJson.peerDependencies[package] || packageJson.peerDependencies["parsegraph-" + package]) ?
         0 : 1
 )
 
