@@ -28,6 +28,12 @@ for arg in $*; do
         bump-patch|patch*) BUMP_VERSION=patch ;;
         bump-minor|minor*) BUMP_VERSION=minor ;;
         bump-major|major*) BUMP_VERSION=major ;;
+        all)
+            RUN_PACKAGES=true
+            RUN_CONFIG=true
+            RUN_DEMO=true
+            RUN_MAKEFILE=true
+            ;;
     esac
 done
 
