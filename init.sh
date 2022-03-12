@@ -47,7 +47,9 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
     fi
 fi
 
-tmuxify stop
+if test y"$TMUX" = y; then
+    tmuxify stop
+fi
 mkdir -p $DEST_DIR/dist
 if find $DEST_DIR/*zip -maxdepth 0 &>/dev/null; then
     mv -fv $DEST_DIR/*zip $DEST_DIR/dist
