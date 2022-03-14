@@ -190,3 +190,4 @@ if test -d $MICROPROJECT_DIR/../packages; then
         git commit -m"Upgrade parsegraph dev dependencies"
     fi
 fi
+./install-deps.sh
