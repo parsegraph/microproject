@@ -2,6 +2,8 @@
 export MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
 source $MICROPROJECT_DIR/init.sh
 
+export CXXFLAGS='-include limits'
+
 if test -f package-lock.json; then
     git rm package-lock.json
     yarn install
