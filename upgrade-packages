@@ -21,8 +21,16 @@ GLSL_MODULES=" \
 
 if test -d $DEST_DIR/src; then
     GLSL_SCRIPTS=`find $DEST_DIR/src -type f -name '*.glsl'`
+    PNG_FILES=`find $DEST_DIR/src -type f -name '*.png'`
 fi
 
+if test x"$PNG_FILES" != x; then
+    cp -r $MICROPROJECT_DIR/src/png.d.ts $DEST_DIR/src
+    git add src/png.d.ts
+    if ! git diff --cached --quiet; then
+        git commit -m"Add PNG support"
+    fi
+fi
 if test x"$GLSL_SCRIPTS" != x; then
     cp -r $MICROPROJECT_DIR/src/glsl.d.ts $DEST_DIR/src
     cp -r $MICROPROJECT_DIR/glslTransformer.js $DEST_DIR
