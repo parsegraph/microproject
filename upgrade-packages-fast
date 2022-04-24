@@ -1,0 +1,199 @@
+#!/bin/bash
+export MICROPROJECT_DIR=$HOME/src/parsegraph/microproject
+source $MICROPROJECT_DIR/init.sh
+
+export CXXFLAGS='-include limits'
+
+if test -f package-lock.json; then
+    git rm package-lock.json
+    yarn install
+    git add yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Remove package-lock.json and convert to yarn"
+    fi
+fi
+
+GLSL_MODULES=" \
+    glslify-loader \
+    ts-shader-loader \
+    webgl-mock"
+
+if test -d $DEST_DIR/src; then
+    GLSL_SCRIPTS=`find $DEST_DIR/src -type f -name '*.glsl'`
+    PNG_FILES=`find $DEST_DIR/src -type f -name '*.png'`
+fi
+
+if test x"$PNG_FILES" != x; then
+    cp -r $MICROPROJECT_DIR/src/png.d.ts $DEST_DIR/src
+    git add src/png.d.ts
+    if ! git diff --cached --quiet; then
+        git commit -m"Add PNG support"
+    fi
+fi
+if test x"$GLSL_SCRIPTS" != x; then
+    cp -r $MICROPROJECT_DIR/src/glsl.d.ts $DEST_DIR/src
+    cp -r $MICROPROJECT_DIR/glslTransformer.js $DEST_DIR
+    cp -r $MICROPROJECT_DIR/jest.config.js $DEST_DIR
+    yarn add -D $GLSL_MODULES
+    git add src/glsl.d.ts
+    git add glslTransformer.js
+    git add jest.config.js
+    git add yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Add GLSL support"
+    fi
+else
+OBSOLETED_MODULES="$OBSOLETED_MODULES $GLSL_MODULES"
+OBSOLETE_CONFIG="$OBSOLETE_CONFIG src/glsl.d.ts glslTransformer.js jest.config.js"
+fi
+
+CURRENT_MODULES="$CURRENT_MODULES `cat $MICROPROJECT_DIR/current-modules.txt`"
+
+OBSOLETED_MODULES="$OBSOLETED_MODULES `cat $MICROPROJECT_DIR/obsolete-modules.txt`"
+
+INSTALLED_OBSOLETE_PACKAGES=""
+
+if test -f $DEST_DIR/package.json; then
+    for mod in $OBSOLETED_MODULES; do
+        if test "$mod" != "parsegraph-`basename $(pwd)`" && grep -q -F -e "\"$mod\"" $DEST_DIR/package.json; then
+            INSTALLED_OBSOLETE_PACKAGES="$INSTALLED_OBSOLETE_PACKAGES $mod"
+        fi
+    done
+    if test -n "$INSTALLED_OBSOLETE_PACKAGES"; then
+        yarn remove $INSTALLED_OBSOLETE_PACKAGES
+    fi
+fi
+git add yarn.lock
+git add package.json
+if ! git diff --cached --quiet; then
+    git commit -m"Remove obsolete packages"
+fi
+
+if test -f $DEST_DIR/package.json; then
+    MISSING_MODULES=""
+    for mod in $CURRENT_MODULES; do
+        if test "$mod" != "parsegraph-`basename $(pwd)`" && ! grep -q -F -e "\"$mod\"" $DEST_DIR/package.json; then
+            MISSING_MODULES="$MISSING_MODULES $mod"
+        fi
+    done
+    if test -n "$MISSING_MODULES"; then
+        yarn add -D $MISSING_MODULES
+        git add yarn.lock
+        git add package.json
+        git commit -m"Add missing packages"
+    fi
+fi
+if test -n "$CURRENT_MODULES"; then
+    yarn upgrade $CURRENT_MODULES
+fi
+git add yarn.lock
+git add package.json
+if ! git diff --cached --quiet; then
+    git commit -m"Upgrade build packages"
+fi
+
+PEER_DEPS=" \
+    react \
+    react-dom \
+    webgl-debug \
+    parsegraph-checkglerror \
+    parsegraph-log"
+
+FOUND_PEER_DEPS=""
+for srcdir in src test; do
+    if test -d $DEST_DIR/$srcdir; then
+        for peerdep in $PEER_DEPS; do
+            if test $peerdep != parsegraph-`basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
+                FOUND_PEER_DEPS="$FOUND_PEER_DEPS $peerdep"
+            fi
+        done
+    fi
+done;
+for srcdir in src test; do
+    if test -d $DEST_DIR/$srcdir; then
+      for anc in $PEER_DEPS; do
+          for peerdep in `$DEST_DIR/../../packages-bin/list-descendents $anc`; do
+              if test $peerdep != parsegraph-`basename $DEST_DIR` && grep -q -F -e $peerdep $DEST_DIR/$srcdir -r; then
+                  FOUND_PEER_DEPS="$FOUND_PEER_DEPS $anc"
+              fi
+          done
+      done
+    fi
+done;
+FOUND_PEER_DEPS=`echo $FOUND_PEER_DEPS | sed -e 's/ /\n/g' | sort | uniq`
+if test -n "$FOUND_PEER_DEPS"; then
+    for mod in $FOUND_PEER_DEPS; do
+        if $MICROPROJECT_DIR/has-peer-dep $mod; then
+            yarn upgrade $mod
+        else
+            yarn add -P $mod
+        fi
+    done
+    git checkout yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Upgrade peer dependencies"
+    fi
+fi
+
+if test -d $MICROPROJECT_DIR/../packages; then
+    PACKAGE_DEPS=`ls -1 $MICROPROJECT_DIR/../packages`
+    FOUND_PACKAGE_DEV_DEPS=""
+    FOUND_PACKAGE_DEPS=""
+    MISSING_PACKAGE_DEPS=""
+
+    for srcdir in src test; do
+        if test -d $DEST_DIR/$srcdir; then
+            for dep in $PACKAGE_DEPS; do
+                if test $dep != `basename $DEST_DIR` && grep -q -F -e parsegraph-$dep $DEST_DIR/$srcdir -r; then
+                    if ! echo "$FOUND_PEER_DEPS" | grep -q -e "parsegraph-$dep"; then
+                        if $MICROPROJECT_DIR/has-dev-dep $dep; then
+                            FOUND_PACKAGE_DEV_DEPS="$FOUND_PACKAGE_DEV_DEPS parsegraph-$dep"
+                        elif $MICROPROJECT_DIR/has-dep $dep; then
+                            FOUND_PACKAGE_DEPS="$FOUND_PACKAGE_DEPS parsegraph-$dep"
+                        else
+                            MISSING_PACKAGE_DEPS="$MISSING_PACKAGE_DEPS parsegraph-$dep"
+                        fi
+                    fi
+                fi
+            done
+        fi
+    done;
+
+    if test -n "$MISSING_PACKAGE_DEPS"; then
+        echo Adding missing $MISSING_PACKAGE_DEPS
+        yarn add $MISSING_PACKAGE_DEPS
+    fi
+    git add yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Add missing parsegraph dependencies"
+    fi
+
+    if test -n "$FOUND_PACKAGE_DEPS"; then
+        echo Upgrading $FOUND_PACKAGE_DEPS
+        for mod in $FOUND_PACKAGE_DEPS ; do
+            yarn upgrade $mod
+        done
+    fi
+    git add yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Upgrade parsegraph dependencies"
+    fi
+
+    if test -n "$FOUND_PACKAGE_DEV_DEPS"; then
+        echo Upgrading $FOUND_PACKAGE_DEV_DEPS
+        for mod in $FOUND_PACKAGE_DEV_DEPS ; do
+            yarn upgrade $mod
+        done
+    fi
+    git add yarn.lock
+    git add package.json
+    if ! git diff --cached --quiet; then
+        git commit -m"Upgrade parsegraph dev dependencies"
+    fi
+fi
+./install-deps.sh
