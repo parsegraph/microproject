@@ -11,11 +11,7 @@ if ! test -f $DEST_DIR/package.json; then
 fi
 
 $RUN_CONFIG && $MICROPROJECT_DIR/upgrade-files
-if $RUN_PACKAGES; then
-  $MICROPROJECT_DIR/upgrade-packages
-elif $RUN_PACKAGE_UPGRADE; then
-  $MICROPROJECT_DIR/upgrade-packages-fast
-fi
+$RUN_PACKAGES && $MICROPROJECT_DIR/upgrade-packages
 $RUN_DEMO && $MICROPROJECT_DIR/upgrade-demo
 $RUN_MAKEFILE && $MICROPROJECT_DIR/upgrade-makefile
 test -n "$BUMP_VERSION" && test "$BUMP_VERSION" != none && $MICROPROJECT_DIR/bump-version $BUMP_VERSION

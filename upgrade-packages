@@ -190,7 +190,7 @@ if test -d $MICROPROJECT_DIR/../packages; then
         echo Upgrading $FOUND_PACKAGE_DEV_DEPS
         for mod in $FOUND_PACKAGE_DEV_DEPS ; do
             yarn remove $mod
-            yarn add $mod
+            yarn add -D $mod
         done
     fi
     git add yarn.lock

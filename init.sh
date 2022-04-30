@@ -14,7 +14,6 @@ fi
 export FORCE=false
 export RUN_CONFIG=false
 export RUN_PACKAGES=false
-export RUN_PACKAGE_UPGRADE=false
 export RUN_DEMO=false
 export RUN_MAKEFILE=false
 export BUMP_VERSION=none
@@ -22,7 +21,7 @@ export BUMP_VERSION=none
 for arg in $*; do
     case "$arg" in
         --force|-f|-force) FORCE=true ;;
-        package|pkg) RUN_PACKAGE_UPGRADE=true ;;
+        package|pkg) RUN_PACKAGE=true ;;
         up|upgrade) RUN_PACKAGES=true ;;
         files) RUN_CONFIG=true ;;
         demo) RUN_DEMO=true ;;
@@ -31,7 +30,7 @@ for arg in $*; do
         bump-minor|minor*) BUMP_VERSION=minor ;;
         bump-major|major*) BUMP_VERSION=major ;;
         all)
-            RUN_PACKAGE_UPGRADE=true
+            RUN_PACKAGES=true
             RUN_CONFIG=true
             RUN_DEMO=true
             RUN_MAKEFILE=true
