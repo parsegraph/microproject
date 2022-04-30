@@ -16,3 +16,5 @@ openssl
 express
 esdoc
 esdoc-standard-plugin
+node-canvas-webgl
+webgl-debug

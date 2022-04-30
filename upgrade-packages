@@ -98,7 +98,6 @@ fi
 PEER_DEPS=" \
     react \
     react-dom \
-    webgl-debug \
     parsegraph-checkglerror \
     parsegraph-log"
 
