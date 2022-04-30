@@ -21,7 +21,7 @@ export BUMP_VERSION=none
 for arg in $*; do
     case "$arg" in
         --force|-f|-force) FORCE=true ;;
-        package|pkg) RUN_PACKAGE=true ;;
+        package|pkg) RUN_PACKAGES=true ;;
         up|upgrade) RUN_PACKAGES=true ;;
         files) RUN_CONFIG=true ;;
         demo) RUN_DEMO=true ;;

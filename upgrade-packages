@@ -71,6 +71,31 @@ if ! git diff --cached --quiet; then
     git commit -m"Remove obsolete packages"
 fi
 
+for mod in `grep -o -E -e "parsegraph-([^\"]+)" $DEST_DIR/package.json | sort | uniq`; do
+    if test "$mod" == "parsegraph-`basename $(pwd)`"; then
+      continue
+    fi
+    if $MICROPROJECT_DIR/has-peer-dep $mod; then
+      continue
+    fi
+    found=false
+    for srcdir in src test; do
+        if ! test -d $DEST_DIR/$srcdir; then
+            continue;
+        fi
+        if grep -q -F -e $mod $DEST_DIR/$srcdir -r; then
+          found=true
+        fi
+    done;
+    if ! $found; then
+      yarn remove $mod
+    fi
+done
+git add package.json
+if ! git diff --cached --quiet; then
+    git commit -m"Removing unused parsegraph dependencies"
+fi
+
 if test -f $DEST_DIR/package.json; then
     MISSING_MODULES=""
     for mod in $CURRENT_MODULES; do
@@ -146,21 +171,25 @@ if test -d $MICROPROJECT_DIR/../packages; then
     MISSING_PACKAGE_DEPS=""
 
     for srcdir in src test; do
-        if test -d $DEST_DIR/$srcdir; then
-            for dep in $PACKAGE_DEPS; do
-                if test $dep != `basename $DEST_DIR` && grep -q -F -e parsegraph-$dep $DEST_DIR/$srcdir -r; then
-                    if ! echo "$FOUND_PEER_DEPS" | grep -q -e "parsegraph-$dep"; then
-                        if $MICROPROJECT_DIR/has-dev-dep $dep; then
-                            FOUND_PACKAGE_DEV_DEPS="$FOUND_PACKAGE_DEV_DEPS parsegraph-$dep"
-                        elif $MICROPROJECT_DIR/has-dep $dep; then
-                            FOUND_PACKAGE_DEPS="$FOUND_PACKAGE_DEPS parsegraph-$dep"
-                        else
-                            MISSING_PACKAGE_DEPS="$MISSING_PACKAGE_DEPS parsegraph-$dep"
-                        fi
+        if ! test -d $DEST_DIR/$srcdir; then
+            continue;
+        fi
+        for dep in $PACKAGE_DEPS; do
+            if test $dep = `basename $DEST_DIR`; then
+                continue;
+            fi
+            if grep -q -F -e parsegraph-$dep $DEST_DIR/$srcdir -r; then
+                if ! echo "$FOUND_PEER_DEPS" | grep -q -e "parsegraph-$dep"; then
+                    if $MICROPROJECT_DIR/has-dev-dep $dep; then
+                        FOUND_PACKAGE_DEV_DEPS="$FOUND_PACKAGE_DEV_DEPS parsegraph-$dep"
+                    elif $MICROPROJECT_DIR/has-dep $dep; then
+                        FOUND_PACKAGE_DEPS="$FOUND_PACKAGE_DEPS parsegraph-$dep"
+                    else
+                        MISSING_PACKAGE_DEPS="$MISSING_PACKAGE_DEPS parsegraph-$dep"
                     fi
                 fi
-            done
-        fi
+            fi
+        done
     done;
 
     if test -n "$MISSING_PACKAGE_DEPS"; then
@@ -199,4 +228,5 @@ if test -d $MICROPROJECT_DIR/../packages; then
         git commit -m"Upgrade parsegraph dev dependencies"
     fi
 fi
+
 ./install-deps.sh
