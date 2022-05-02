@@ -19,6 +19,7 @@ eslint-config-prettier
 jest
 jsdom
 jsdom-global
+jest-environment-jsdom
 prettier
 raw-loader
 source-map-loader
